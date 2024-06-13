@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+import { isNumber, toInt } from 'radash';
 import { $t } from '@/locales';
 
 /**
@@ -55,4 +57,16 @@ export function toggleHtmlClass(className: string) {
     add,
     remove
   };
+}
+
+export function formatUnix(
+  timestamp: number | null | undefined,
+  format: string | null = null,
+  placeholder: string | null = 'N/A'
+): string | null {
+  const t = toInt(timestamp);
+  if (!isNumber(t) || t <= 0) {
+    return placeholder;
+  }
+  return dayjs.unix(t).format(format || 'YYYY-MM-DD HH:mm');
 }
