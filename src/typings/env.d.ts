@@ -31,6 +31,8 @@ declare namespace Env {
      * success code of backend service
      *
      * when the code is received, the request is successful
+     *
+     * @deprecated
      */
     readonly VITE_SERVICE_SUCCESS_CODE: string;
     /**
@@ -39,6 +41,8 @@ declare namespace Env {
      * when the code is received, the user will be logged out and redirected to login page
      *
      * use "," to separate multiple codes
+     *
+     * @deprecated
      */
     readonly VITE_SERVICE_LOGOUT_CODES: string;
     /**
@@ -47,6 +51,8 @@ declare namespace Env {
      * when the code is received, the user will be logged out by displaying a modal
      *
      * use "," to separate multiple codes
+     *
+     * @deprecated
      */
     readonly VITE_SERVICE_MODAL_LOGOUT_CODES: string;
     /**
@@ -55,9 +61,15 @@ declare namespace Env {
      * when the code is received, it will refresh the token and resend the request
      *
      * use "," to separate multiple codes
+     *
+     * @deprecated
      */
     readonly VITE_SERVICE_EXPIRED_TOKEN_CODES: string;
-    /** when the route mode is static, the defined super role */
+    /**
+     * when the route mode is static, the defined super role
+     *
+     * @deprecated
+     */
     readonly VITE_STATIC_SUPER_ROLE: string;
     /**
      * other backend service base url
@@ -104,4 +116,8 @@ declare namespace Env {
     /** Used to differentiate storage across different domains */
     readonly VITE_STORAGE_PREFIX?: string;
   }
+}
+
+interface ImportMeta {
+  readonly env: Env.ImportMeta;
 }
