@@ -1,4 +1,5 @@
 import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import type { ApiResponseError } from './shared';
 
 export type ContentType =
   | 'text/html'
@@ -20,6 +21,7 @@ export interface RequestOption<ResponseData = any> {
   /**
    * The hook to check backend response is success or not
    *
+   * @deprecated 当前不再使用
    * @param response Axios response
    */
   isBackendSuccess: (response: AxiosResponse<ResponseData>) => boolean;
@@ -28,6 +30,7 @@ export interface RequestOption<ResponseData = any> {
    *
    * For example: You can handle the expired token in this hook
    *
+   * @deprecated 当前不再使用
    * @param response Axios response
    * @param instance Axios instance
    */
@@ -48,7 +51,7 @@ export interface RequestOption<ResponseData = any> {
    *
    * @param error
    */
-  onError: (error: AxiosError<ResponseData>) => void | Promise<void>;
+  onError: (error: AxiosError<ResponseData>) => Promise<void> | Promise<AxiosError | ApiResponseError | Error | null>;
 }
 
 interface ResponseMap {

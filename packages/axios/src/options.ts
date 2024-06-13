@@ -10,7 +10,7 @@ export function createDefaultOptions<ResponseData = any>(options?: Partial<Reque
     isBackendSuccess: _response => true,
     onBackendFail: async () => {},
     transformBackendResponse: async response => response.data,
-    onError: async () => {}
+    onError: async () => Promise.resolve(null)
   };
 
   Object.assign(opts, options);
