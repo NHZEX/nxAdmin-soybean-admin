@@ -6,6 +6,7 @@ import type { RequestOption } from './type';
 
 export function createDefaultOptions<ResponseData = any>(options?: Partial<RequestOption<ResponseData>>) {
   const opts: RequestOption<ResponseData> = {
+    enableAutoRetry: true,
     onRequest: async config => config,
     isBackendSuccess: _response => true,
     onBackendFail: async () => {},

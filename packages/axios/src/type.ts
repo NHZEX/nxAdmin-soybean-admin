@@ -10,6 +10,8 @@ export type ContentType =
   | 'application/octet-stream';
 
 export interface RequestOption<ResponseData = any> {
+  /** 是否开启自动重试 */
+  enableAutoRetry: boolean;
   /**
    * The hook before request
    *

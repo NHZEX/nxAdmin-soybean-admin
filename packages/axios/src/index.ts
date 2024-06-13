@@ -33,8 +33,10 @@ function createCommonRequest<ResponseData = any>(
   const cancelTokenSourceMap = new Map<string, CancelTokenSource>();
 
   // config axios retry
-  const retryOptions = createRetryOptions(axiosConf);
-  axiosRetry(instance, retryOptions);
+  if (opts.enableAutoRetry) {
+    const retryOptions = createRetryOptions(axiosConf);
+    axiosRetry(instance, retryOptions);
+  }
 
   instance.interceptors.request.use(conf => {
     const config: InternalAxiosRequestConfig = { ...conf };
