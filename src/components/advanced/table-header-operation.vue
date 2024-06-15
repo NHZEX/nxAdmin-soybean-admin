@@ -7,6 +7,7 @@ defineOptions({
 
 interface Props {
   itemAlign?: NaiveUI.Align;
+  showBatchDelete?: boolean;
   disabledDelete?: boolean;
   loading?: boolean;
 }
@@ -48,7 +49,7 @@ function refresh() {
         </template>
         {{ $t('common.add') }}
       </NButton>
-      <NPopconfirm @positive-click="batchDelete">
+      <NPopconfirm v-if="showBatchDelete" @positive-click="batchDelete">
         <template #trigger>
           <NButton size="small" ghost type="error" :disabled="disabledDelete">
             <template #icon>
