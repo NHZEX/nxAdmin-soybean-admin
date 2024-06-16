@@ -611,6 +611,7 @@ declare namespace App {
         confirmPwd: FormMsg;
         code: FormMsg;
         email: FormMsg;
+        asciiString: FormMsg;
       };
       dropdown: Record<Global.DropdownKey, string>;
       icon: {
@@ -656,7 +657,7 @@ declare namespace App {
   /** Service namespace */
   namespace Service {
     /** Other baseURL key */
-    type OtherBaseURLKey = 'demo';
+    type OtherBaseURLKey = 'demo' | 'nxAdmin';
 
     interface ServiceConfigItem {
       /** The backend service base url */
