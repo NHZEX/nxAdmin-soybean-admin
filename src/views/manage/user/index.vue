@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { fetchDeleteUser, fetchGetUserList } from '@/service/api';
+import { fetchDeleteUser, fetchUserList } from '@/service/api';
 import { $t } from '@/locales';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate, wrapApiFn } from '@/hooks/common/table';
@@ -11,7 +11,7 @@ import UserSearch from './modules/user-search.vue';
 const appStore = useAppStore();
 
 const { columns, columnChecks, data, getData, loading, mobilePagination, searchParams, resetSearchParams } = useTable({
-  apiFn: wrapApiFn(fetchGetUserList) as typeof fetchGetUserList,
+  apiFn: wrapApiFn(fetchUserList) as typeof fetchUserList,
   showTotal: true,
   apiParams: {
     current: 1,
