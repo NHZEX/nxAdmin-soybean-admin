@@ -31,6 +31,7 @@ declare namespace Api {
     interface LegacyPaginatingQueryRecord<T = any>
       extends Omit<PaginatingCommonParams, 'current' | 'size' | 'page' | 'limit'> {
       data: T[];
+      total: number;
       page: {
         current: number;
         size: number;
