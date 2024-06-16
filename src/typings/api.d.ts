@@ -1,3 +1,6 @@
+// 不要使用任何 import type 语句导入，会导致 ts 全局声明转变为模块，无法全局应用
+// 正确例子: type SystemUserType = import('@/enum/system-manage').SystemUserType;
+
 /**
  * Namespace Api
  *
@@ -8,16 +11,31 @@ declare namespace Api {
     /** common params of paginating */
     interface PaginatingCommonParams {
       /** current page number */
-      current: number;
+      current?: number; // 暂时兼容避免类型检测错误
       /** page size */
-      size: number;
+      size?: number; // 暂时兼容避免类型检测错误
       /** total count */
       total: number;
+      // 新增参数声明
+      /** current page number */
+      page?: number;
+      /** page size */
+      limit?: number;
     }
 
-    /** common params of paginating query list data */
+    /** common params of paginating query list data 完成全部实现后再考虑如何融合该类 */
     interface PaginatingQueryRecord<T = any> extends PaginatingCommonParams {
-      records: T[];
+      records?: T[]; // 暂时兼容避免类型检测错误
+      data?: T[];
+    }
+    interface LegacyPaginatingQueryRecord<T = any>
+      extends Omit<PaginatingCommonParams, 'current' | 'size' | 'page' | 'limit'> {
+      data: T[];
+      page: {
+        current: number;
+        size: number;
+        hasMore: boolean;
+      };
     }
 
     /**
@@ -43,6 +61,14 @@ declare namespace Api {
       /** record status */
       status: EnableStatus | null;
     } & T;
+
+    /** common record */
+    type LegacyCommonRecord<T = any> = {
+      id: number;
+      readonly create_time: number;
+      readonly update_time: number;
+      readonly lock_version: number;
+    } & T;
   }
 
   /**
@@ -53,14 +79,23 @@ declare namespace Api {
   namespace Auth {
     interface LoginToken {
       token: string;
-      refreshToken: string;
+      uuid: string;
+      refreshToken?: string; // 目前用不上
     }
 
+    interface LoginPermission {
+      [key: string]: boolean;
+    }
+
+    type AuthItem = string[] | string | boolean | null;
+
     interface UserInfo {
-      userId: string;
-      userName: string;
-      roles: string[];
-      buttons: string[];
+      userId?: string;
+      userName?: string;
+      roles?: string[];
+      buttons?: string[];
+      user: SystemManage.User;
+      permission: LoginPermission;
     }
   }
 
@@ -87,8 +122,8 @@ declare namespace Api {
    *
    * backend api module: "systemManage"
    */
-  namespace SystemManage {
-    type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size'>;
+  export namespace SystemManage {
+    type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size' | 'page' | 'limit'>;
 
     /** role */
     type Role = Common.CommonRecord<{
@@ -108,6 +143,13 @@ declare namespace Api {
     /** role list */
     type RoleList = Common.PaginatingQueryRecord<Role>;
 
+    type RoleOption = CommonType.OptionEx<
+      number,
+      {
+        type: number;
+      }
+    >;
+
     /** all role */
     type AllRole = Pick<Role, 'id' | 'roleName' | 'roleCode'>;
 
@@ -119,26 +161,33 @@ declare namespace Api {
      */
     type UserGender = '1' | '2';
 
+    type SystemUserType = import('@/enum/system-manage').SystemUserType;
+
     /** user */
-    type User = Common.CommonRecord<{
-      /** user name */
-      userName: string;
-      /** user gender */
-      userGender: UserGender | null;
-      /** user nick name */
-      nickName: string;
-      /** user phone */
-      userPhone: string;
-      /** user email */
-      userEmail: string;
-      /** user role code collection */
-      userRoles: string[];
+    type User = Common.LegacyCommonRecord<{
+      id: number;
+      genre: SystemUserType;
+      status: number;
+      role_id: number;
+      role_ids: number[];
+      nickname: string;
+      username: string;
+      email?: string;
+      group_id?: number;
+      readonly signup_ip?: string;
+      readonly last_login_time?: number;
+      readonly last_login_ip?: string;
+      readonly status_desc?: string;
+      readonly genre_desc?: string;
+      avatar_data?: null;
+      avatar?: string;
+      readonly role_name?: string;
+      readonly roles?: { id: number; name: string }[];
     }>;
 
     /** user search params */
     type UserSearchParams = CommonType.RecordNullable<
-      Pick<Api.SystemManage.User, 'userName' | 'userGender' | 'nickName' | 'userPhone' | 'userEmail' | 'status'> &
-        CommonSearchParams
+      Pick<Api.SystemManage.User, 'username' | 'nickname' | 'status' | 'genre'> & CommonSearchParams
     >;
 
     /** user list */

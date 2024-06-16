@@ -16,11 +16,12 @@ declare namespace NaiveUI {
    *
    * if you want to add a custom column, you should add a key to this type
    */
-  type CustomColumnKey = 'operate';
+  type CustomColumnKey = 'operate' | '_dateInfo';
 
   type SetTableColumnKey<C, T> = Omit<C, 'key'> & { key: keyof T | CustomColumnKey };
 
   type TableData = Api.Common.CommonRecord<object>;
+  type LegacyTableData = Api.Common.LegacyCommonRecord<object>;
 
   type TableColumnWithKey<T> = SetTableColumnKey<DataTableBaseColumn<T>, T> | SetTableColumnKey<TableColumnGroup<T>, T>;
 

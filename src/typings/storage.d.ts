@@ -14,9 +14,11 @@ declare namespace StorageType {
     lang: App.I18n.LangType;
     /** The token */
     token: string;
+    /** The uuid */
+    uuid: string;
     /** Fixed sider with mix-menu */
     mixSiderFixed: CommonType.YesOrNo;
-    /** The refresh token */
+    /** The refresh token 当前用不上 */
     refreshToken: string;
     /** The theme color */
     themeColor: string;

@@ -16,6 +16,10 @@ declare namespace CommonType {
    */
   type Option<K = string> = { value: K; label: string };
 
+  type OptionEx<K = number, T = object> = CommonType.Option<K> & T;
+
+  type RecordPrimaryKey = number | string;
+
   type YesOrNo = 'Y' | 'N';
 
   /** add null to all properties */

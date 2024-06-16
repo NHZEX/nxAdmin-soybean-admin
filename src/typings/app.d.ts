@@ -682,9 +682,11 @@ declare namespace App {
     /** The backend service response data */
     type Response<T = unknown> = {
       /** The backend service response code */
-      code: string;
+      code: number | string; // 原本设计是字符串（确实可以考虑字符串），当前改为数字先
       /** The backend service response message */
       msg: string;
+      /** 该键是否使用还在考虑，取决于要修改的地方多不多 */
+      message?: string;
       /** The backend service response data */
       data: T;
     };
