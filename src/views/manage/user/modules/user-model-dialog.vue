@@ -87,7 +87,7 @@ async function getUserInfo() {
   if (props.operateType !== 'edit') {
     return;
   }
-  if (props.id === null) {
+  if (props?.id === undefined || props.id === null) {
     console.warn('missing id');
     return;
   }
