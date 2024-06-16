@@ -1,4 +1,4 @@
-import { computed, reactive, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { defineStore } from 'pinia';
 import { useLoading } from '@sa/hooks';
@@ -7,8 +7,9 @@ import { useRouterPush } from '@/hooks/common/router';
 import { fetchGetUserInfo, fetchLogin } from '@/service/api';
 import { localStg } from '@/utils/storage';
 import { $t } from '@/locales';
+import { SystemUserType } from '@/enum/system-manage';
 import { useRouteStore } from '../route';
-import { clearAuthStorage, getToken } from './shared';
+import { clearAuthStorage, getToken, hasPermission } from './shared';
 
 export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   const route = useRoute();
@@ -18,18 +19,14 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
   const token = ref(getToken());
 
-  const userInfo: Api.Auth.UserInfo = reactive({
-    userId: '',
-    userName: '',
-    roles: [],
-    buttons: []
-  });
+  const permissions = ref<Set<string>>(new Set());
+  const userInfo = ref<Api.SystemManage.User>();
 
   /** is super role in static route */
   const isStaticSuper = computed(() => {
-    const { VITE_AUTH_ROUTE_MODE, VITE_STATIC_SUPER_ROLE } = import.meta.env;
+    const { VITE_AUTH_ROUTE_MODE } = import.meta.env;
 
-    return VITE_AUTH_ROUTE_MODE === 'static' && userInfo.roles.includes(VITE_STATIC_SUPER_ROLE);
+    return VITE_AUTH_ROUTE_MODE === 'static' && userInfo.value?.genre === SystemUserType.SUPER_ADMIN;
   });
 
   /** Is login */
@@ -75,7 +72,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
         if (routeStore.isInitAuthRoute) {
           window.$notification?.success({
             title: $t('page.login.common.loginSuccess'),
-            content: $t('page.login.common.welcomeBack', { userName: userInfo.userName }),
+            content: $t('page.login.common.welcomeBack', { userName: userInfo.value?.username }),
             duration: 4500
           });
         }
@@ -90,7 +87,8 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   async function loginByToken(loginToken: Api.Auth.LoginToken) {
     // 1. stored in the localStorage, the later requests need it in headers
     localStg.set('token', loginToken.token);
-    localStg.set('refreshToken', loginToken.refreshToken);
+    localStg.set('uuid', loginToken.uuid);
+    localStg.set('refreshToken', 'null');
 
     // 2. get user info
     const pass = await getUserInfo();
@@ -109,7 +107,8 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
     if (!error) {
       // update store
-      Object.assign(userInfo, info);
+      userInfo.value = info.user;
+      permissions.value = new Set(Object.keys(info.permission));
 
       return true;
     }
@@ -129,14 +128,20 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     }
   }
 
+  function testAccessPermission(testAuth: Api.Auth.AuthItem): boolean {
+    return hasPermission(permissions.value, testAuth);
+  }
+
   return {
     token,
     userInfo,
+    permissions,
     isStaticSuper,
     isLogin,
     loginLoading,
     resetStore,
     login,
-    initUserInfo
+    initUserInfo,
+    testAccessPermission
   };
 });
