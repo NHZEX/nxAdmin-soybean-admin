@@ -88,8 +88,12 @@ export default function useHookTable<A extends ApiFn, T, C>(config: TableConfig<
     }));
   }
 
-  async function getData() {
+  async function getData(options?: { resetFirstPage?: boolean }) {
     startLoading();
+
+    if (options?.resetFirstPage === true) {
+      searchParams.current = 1;
+    }
 
     const formattedParams = formatSearchParams(searchParams);
 
