@@ -6,7 +6,7 @@ import { $t } from '@/locales';
 import { SystemUserLegacyStatusLabel, SystemUserType, SystemUserTypeLabel } from '@/enum/system-manage';
 
 defineOptions({
-  name: 'UserOperateDrawer'
+  name: 'UserModelDialog'
 });
 
 interface Props {
