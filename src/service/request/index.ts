@@ -1,20 +1,35 @@
-import type { AxiosResponse } from 'axios';
-import { BACKEND_ERROR_CODE, createFlatRequest, createRequest } from '@sa/axios';
+import { BACKEND_ERROR_CODE, type FlatRequestInstance, createFlatRequest, createRequest } from '@sa/axios';
+import { isPlainObject } from 'lodash-es';
 import { useAuthStore } from '@/store/modules/auth';
 import { $t } from '@/locales';
 import { localStg } from '@/utils/storage';
 import { getServiceBaseURL } from '@/utils/service';
-import { handleRefreshToken, showErrorMsg } from './shared';
+import { RESPONSE_UNRECOGNIZED } from '~/packages/axios/src/constant';
+import { createResponseError } from '@/service/request/shared';
+import { truncateString } from '~/packages/utils';
 import type { RequestInstanceState } from './type';
 
 const isHttpProxy = import.meta.env.DEV && import.meta.env.VITE_HTTP_PROXY === 'Y';
 const { baseURL, otherBaseURL } = getServiceBaseURL(import.meta.env, isHttpProxy);
 
-export const request = createFlatRequest<App.Service.Response, RequestInstanceState>(
+function handleLogoutEx() {
+  const authStore = useAuthStore();
+  authStore.resetStore();
+}
+
+console.debug('todo baseURL', baseURL);
+
+// request 重新声明临时解决错误 Vue: request implicitly has type any because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+export const request: FlatRequestInstance<RequestInstanceState, App.Service.Response> = createFlatRequest<
+  App.Service.Response,
+  RequestInstanceState
+>(
   {
-    baseURL,
+    // baseURL, // todo 当测试对接没问题后在替换为 baseURL
+    baseURL: otherBaseURL.nxAdmin,
     headers: {
-      apifoxToken: 'XL299LiMEDZ0H5h3A29PxwQXdMJqWyY2'
+      'X-Requested-With': 'XMLHttpRequest'
+      // apifoxToken: 'XL299LiMEDZ0H5h3A29PxwQXdMJqWyY2'
     }
   },
   {
@@ -23,17 +38,20 @@ export const request = createFlatRequest<App.Service.Response, RequestInstanceSt
 
       // set token
       const token = localStg.get('token');
-      const Authorization = token ? `Bearer ${token}` : null;
-      Object.assign(headers, { Authorization });
+      if (token) {
+        const Authorization = token ? `Bearer TK="${token}"` : null;
+        Object.assign(headers, { Authorization });
+      }
 
       return config;
     },
-    isBackendSuccess(response) {
-      // when the backend response code is "0000"(default), it means the request is success
-      // to change this logic by yourself, you can modify the `VITE_SERVICE_SUCCESS_CODE` in `.env` file
-      return String(response.data.code) === import.meta.env.VITE_SERVICE_SUCCESS_CODE;
+    isBackendSuccess() {
+      // 已经弃用，该 hook 无实际用途
+      return true;
     },
-    async onBackendFail(response, instance) {
+
+    async onBackendFail(response) {
+      // 该钩子不会在请求成功时被调用了（非 4xx 5xx）
       const authStore = useAuthStore();
 
       function handleLogout() {
@@ -47,16 +65,13 @@ export const request = createFlatRequest<App.Service.Response, RequestInstanceSt
         request.state.errMsgStack = request.state.errMsgStack.filter(msg => msg !== response.data.msg);
       }
 
-      // when the backend response code is in `logoutCodes`, it means the user will be logged out and redirected to login page
-      const logoutCodes = import.meta.env.VITE_SERVICE_LOGOUT_CODES?.split(',') || [];
-      if (logoutCodes.includes(response.data.code)) {
+      if (response.status === 401) {
         handleLogout();
         return null;
       }
 
-      // when the backend response code is in `modalLogoutCodes`, it means the user will be logged out by displaying a modal
-      const modalLogoutCodes = import.meta.env.VITE_SERVICE_MODAL_LOGOUT_CODES?.split(',') || [];
-      if (modalLogoutCodes.includes(response.data.code) && !request.state.errMsgStack?.includes(response.data.msg)) {
+      // 确认重新登录当前是死代码，但具有一定的参考价值
+      if (response.status === 401 && !request.state.errMsgStack?.includes(response.data.msg)) {
         request.state.errMsgStack = [...(request.state.errMsgStack || []), response.data.msg];
 
         // prevent the user from refreshing the page
@@ -79,55 +94,100 @@ export const request = createFlatRequest<App.Service.Response, RequestInstanceSt
         return null;
       }
 
-      // when the backend response code is in `expiredTokenCodes`, it means the token is expired, and refresh token
-      // the api `refreshToken` can not return error code in `expiredTokenCodes`, otherwise it will be a dead loop, should return `logoutCodes` or `modalLogoutCodes`
-      const expiredTokenCodes = import.meta.env.VITE_SERVICE_EXPIRED_TOKEN_CODES?.split(',') || [];
-      if (expiredTokenCodes.includes(response.data.code) && !request.state.isRefreshingToken) {
-        request.state.isRefreshingToken = true;
-
-        const refreshConfig = await handleRefreshToken(response.config);
-
-        request.state.isRefreshingToken = false;
-
-        if (refreshConfig) {
-          return instance.request(refreshConfig) as Promise<AxiosResponse>;
-        }
-      }
+      // RefreshingToken 当前不使用，但具有一定的参考价值
+      // // when the backend response code is in `expiredTokenCodes`, it means the token is expired, and refresh token
+      // // the api `refreshToken` can not return error code in `expiredTokenCodes`, otherwise it will be a dead loop, should return `logoutCodes` or `modalLogoutCodes`
+      // const expiredTokenCodes = import.meta.env.VITE_SERVICE_EXPIRED_TOKEN_CODES?.split(',') || [];
+      // if (expiredTokenCodes.includes(response.data.code) && !request.state.isRefreshingToken) {
+      //   request.state.isRefreshingToken = true;
+      //
+      //   const refreshConfig = await handleRefreshToken(response.config);
+      //
+      //   request.state.isRefreshingToken = false;
+      //
+      //   if (refreshConfig) {
+      //     return instance.request(refreshConfig) as Promise<AxiosResponse>;
+      //   }
+      // }
 
       return null;
     },
     transformBackendResponse(response) {
-      return response.data.data;
+      const extractLevel = response.config.extractLevel ?? 1;
+      switch (extractLevel) {
+        case 1:
+          return response.data;
+        case 2:
+          if (response.status === 204 || !isPlainObject(response.data)) {
+            return response;
+          }
+          return response.data?.data;
+
+        default:
+          return response;
+      }
     },
-    onError(error) {
-      // when the request is fail, you can show error message
-
-      let message = error.message;
-      let backendErrorCode = '';
-
-      // get backend error message and code
-      if (error.code === BACKEND_ERROR_CODE) {
-        message = error.response?.data?.msg || message;
-        backendErrorCode = error.response?.data?.code || '';
+    async onError(error) {
+      if (error.code === RESPONSE_UNRECOGNIZED) {
+        return null;
       }
-
-      // the error message is displayed in the modal
-      const modalLogoutCodes = import.meta.env.VITE_SERVICE_MODAL_LOGOUT_CODES?.split(',') || [];
-      if (modalLogoutCodes.includes(backendErrorCode)) {
-        return;
+      const response = error.response;
+      const respData = response?.data;
+      const httpCode = response!.status;
+      try {
+        if (isPlainObject(respData)) {
+          const errno = respData?.code || -1;
+          const message = respData?.msg || respData?.message || 'unknown';
+          return createResponseError(
+            message,
+            {
+              code: errno,
+              innerError: error
+            },
+            request.state
+          );
+        } else if (respData instanceof Blob) {
+          const result = await respData.text();
+          let message = 'unknown';
+          let errno = -1;
+          try {
+            const data = JSON.parse(result);
+            if (isPlainObject(data)) {
+              errno = data.errno;
+              message = data.message;
+            }
+          } catch (e) {
+            message = truncateString(result, 128, '[omit...]');
+          }
+          return createResponseError(
+            message,
+            {
+              code: errno,
+              innerError: error
+            },
+            request.state
+          );
+        }
+        return createResponseError(
+          'unknown error',
+          {
+            code: -1,
+            innerError: error
+          },
+          request.state
+        );
+      } finally {
+        if (httpCode === 401) {
+          // 会话过期
+          handleLogoutEx();
+        }
       }
-
-      // when the token is expired, refresh token and retry request, so no need to show error message
-      const expiredTokenCodes = import.meta.env.VITE_SERVICE_EXPIRED_TOKEN_CODES?.split(',') || [];
-      if (expiredTokenCodes.includes(backendErrorCode)) {
-        return;
-      }
-
-      showErrorMsg(request.state, message);
+      // showErrorMsg(request.state, message);
     }
   }
 );
 
+/** @deprecated */
 export const demoRequest = createRequest<App.Service.DemoResponse>(
   {
     baseURL: otherBaseURL.demo
@@ -155,7 +215,7 @@ export const demoRequest = createRequest<App.Service.DemoResponse>(
     transformBackendResponse(response) {
       return response.data.result;
     },
-    onError(error) {
+    onError: error => {
       // when the request is fail, you can show error message
 
       let message = error.message;
@@ -166,6 +226,7 @@ export const demoRequest = createRequest<App.Service.DemoResponse>(
       }
 
       window.$message?.error(message);
+      return Promise.resolve(null);
     }
   }
 );
