@@ -1,12 +1,14 @@
-export enum SystemUserLegacyStatus {
+export enum CommonLegacyStatus {
   NORMAL = 0,
   DISABLE = 1
 }
 
-export const SystemUserLegacyStatusLabel = new Map<number, string>([
-  [SystemUserLegacyStatus.NORMAL, '激活'],
-  [SystemUserLegacyStatus.DISABLE, '禁用']
+export const CommonLegacyStatusLabel = new Map<number, string>([
+  [CommonLegacyStatus.NORMAL, '激活'],
+  [CommonLegacyStatus.DISABLE, '禁用']
 ]);
+
+export const SystemUserLegacyStatusLabel = CommonLegacyStatusLabel;
 
 export enum SystemUserType {
   SUPER_ADMIN = 1,

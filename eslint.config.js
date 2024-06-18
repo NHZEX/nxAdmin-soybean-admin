@@ -45,6 +45,7 @@ export default defineConfig(
       'unocss/order-attributify': 'off',
       // === 自定义规则开始 ===
       'no-warning-comments': 'warn',
+      'no-continue': 'off',
       'no-control-regex': 'off'
     }
   }

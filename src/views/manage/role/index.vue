@@ -1,25 +1,24 @@
 <script setup lang="tsx">
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { fetchGetRoleList } from '@/service/api';
+import { fetchDeleteRole, fetchRoleList } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
-import { useTable, useTableOperate } from '@/hooks/common/table';
+import { useTable, useTableOperate, wrapApiFn } from '@/hooks/common/table';
 import { $t } from '@/locales';
-import { enableStatusRecord } from '@/constants/business';
-import RoleOperateDrawer from './modules/role-operate-drawer.vue';
+import { formatUnix } from '@/utils/common';
+import RoleModelDialog from '@/views/manage/role/modules/role-model-dialog.vue';
 import RoleSearch from './modules/role-search.vue';
 
 const appStore = useAppStore();
 
 const { columns, columnChecks, data, loading, getData, mobilePagination, searchParams, resetSearchParams } = useTable({
-  apiFn: fetchGetRoleList,
+  apiFn: wrapApiFn(fetchRoleList) as typeof fetchRoleList,
   apiParams: {
     current: 1,
     size: 10,
     // if you want to use the searchParams in Form, you need to define the following properties, and the value is null
     // the value can not be undefined, otherwise the property in Form will not be reactive
-    status: null,
-    roleName: null,
-    roleCode: null
+    name: null,
+    status: null
   },
   columns: () => [
     {
@@ -28,27 +27,10 @@ const { columns, columnChecks, data, loading, getData, mobilePagination, searchP
       width: 48
     },
     {
-      key: 'index',
-      title: $t('common.index'),
+      key: 'id',
+      title: 'ID',
       width: 64,
       align: 'center'
-    },
-    {
-      key: 'roleName',
-      title: $t('page.manage.role.roleName'),
-      align: 'center',
-      minWidth: 120
-    },
-    {
-      key: 'roleCode',
-      title: $t('page.manage.role.roleCode'),
-      align: 'center',
-      minWidth: 120
-    },
-    {
-      key: 'roleDesc',
-      title: $t('page.manage.role.roleDesc'),
-      minWidth: 120
     },
     {
       key: 'status',
@@ -56,19 +38,37 @@ const { columns, columnChecks, data, loading, getData, mobilePagination, searchP
       align: 'center',
       width: 100,
       render: row => {
-        if (row.status === null) {
-          return null;
-        }
-
-        const tagMap: Record<Api.Common.EnableStatus, NaiveUI.ThemeColor> = {
-          1: 'success',
-          2: 'warning'
-        };
-
-        const label = $t(enableStatusRecord[row.status]);
-
-        return <NTag type={tagMap[row.status]}>{label}</NTag>;
+        return <NTag type="info">{row.status_desc}</NTag>;
       }
+    },
+    {
+      key: 'name',
+      title: $t('page.manage.role.roleName'),
+      align: 'center',
+      minWidth: 120
+    },
+    {
+      key: 'description',
+      title: $t('page.manage.role.roleDesc'),
+      minWidth: 120
+    },
+    {
+      key: '_dateInfo',
+      title: '编辑时间',
+      align: 'left',
+      width: 220,
+      render: row => (
+        <ul>
+          <li>
+            <label>创建：</label>
+            {formatUnix(row.create_time)}
+          </li>
+          <li>
+            <label>更新：</label>
+            {formatUnix(row.update_time)}
+          </li>
+        </ul>
+      )
     },
     {
       key: 'operate',
@@ -115,11 +115,11 @@ async function handleBatchDelete() {
   onBatchDeleted();
 }
 
-function handleDelete(id: number) {
-  // request
-  console.log(id);
-
-  onDeleted();
+async function handleDelete(id: number) {
+  const { error } = await fetchDeleteRole(id);
+  if (!error) {
+    await onDeleted();
+  }
 }
 
 function edit(id: number) {
@@ -129,11 +129,12 @@ function edit(id: number) {
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <RoleSearch v-model:model="searchParams" @reset="resetSearchParams" @search="getData" />
+    <RoleSearch v-model:model="searchParams" @reset="resetSearchParams" @search="getData({ resetFirstPage: true })" />
     <NCard :title="$t('page.manage.role.title')" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"
+          :show-batch-delete="false"
           :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"
           @add="handleAdd"
@@ -149,15 +150,19 @@ function edit(id: number) {
         :flex-height="!appStore.isMobile"
         :scroll-x="702"
         :loading="loading"
+        bordered
+        :striped="false"
+        :single-column="false"
+        :single-line="false"
         remote
         :row-key="row => row.id"
         :pagination="mobilePagination"
         class="sm:h-full"
       />
-      <RoleOperateDrawer
+      <RoleModelDialog
+        :id="editingData?.id"
         v-model:visible="drawerVisible"
         :operate-type="operateType"
-        :row-data="editingData"
         @submitted="getData"
       />
     </NCard>

@@ -126,19 +126,39 @@ declare namespace Api {
   export namespace SystemManage {
     type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size' | 'page' | 'limit'>;
 
+    type PermissionNode = {
+      name: string;
+      children?: PermissionNode[];
+      [allow: number]: string;
+      title: string;
+      desc: string;
+      pid: string;
+      sort: number;
+      spread: boolean;
+      valid: boolean;
+    };
+
+    type PermissionTree = PermissionNode[];
+    type PermissionSet = string[];
+
     /** role */
-    type Role = Common.CommonRecord<{
-      /** role name */
-      roleName: string;
-      /** role code */
-      roleCode: string;
-      /** role description */
-      roleDesc: string;
+    type Role = Common.LegacyCommonRecord<{
+      readonly id: number;
+      readonly pid: number;
+      genre: number;
+      status: number;
+      name: string;
+      description: string;
+      readonly status_desc?: string;
+      readonly genre_desc?: string;
+      ext?: {
+        permission?: string[];
+      };
     }>;
 
     /** role search params */
     type RoleSearchParams = CommonType.RecordNullable<
-      Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'status'> & CommonSearchParams
+      Pick<Api.SystemManage.Role, 'name' | 'status'> & CommonSearchParams
     >;
 
     /** role list */
