@@ -74,6 +74,10 @@ export async function gitCommitVerify() {
 
   const commitMsg = readFileSync(gitMsgPath, 'utf8').trim();
 
+  if (commitMsg.startsWith('Merge')) {
+    return;
+  }
+
   const REG_EXP = /(?<type>[a-z]+)(?:\((?<scope>.+)\))?(?<breaking>!)?: (?<description>.+)/i;
 
   if (!REG_EXP.test(commitMsg)) {
