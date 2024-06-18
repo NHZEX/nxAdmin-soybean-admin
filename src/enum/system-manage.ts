@@ -8,6 +8,20 @@ export const CommonLegacyStatusLabel = new Map<number, string>([
   [CommonLegacyStatus.DISABLE, '禁用']
 ]);
 
+export function toTabTypeByCommonLegacyStatus(
+  key: number,
+  defValue: NaiveUI.ComponentsBasicsType = 'default'
+): NaiveUI.ComponentsBasicsType | undefined {
+  switch (key) {
+    case CommonLegacyStatus.NORMAL:
+      return 'info';
+    case CommonLegacyStatus.DISABLE:
+      return 'warning';
+    default:
+      return defValue;
+  }
+}
+
 export const SystemUserLegacyStatusLabel = CommonLegacyStatusLabel;
 
 export enum SystemUserType {

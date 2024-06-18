@@ -6,6 +6,7 @@ import { useTable, useTableOperate, wrapApiFn } from '@/hooks/common/table';
 import { $t } from '@/locales';
 import { formatUnix } from '@/utils/common';
 import RoleModelDialog from '@/views/manage/role/modules/role-model-dialog.vue';
+import { toTabTypeByCommonLegacyStatus } from '@/enum/system-manage';
 import RoleSearch from './modules/role-search.vue';
 
 const appStore = useAppStore();
@@ -38,7 +39,8 @@ const { columns, columnChecks, data, loading, getData, mobilePagination, searchP
       align: 'center',
       width: 100,
       render: row => {
-        return <NTag type="info">{row.status_desc}</NTag>;
+        const typeMap = toTabTypeByCommonLegacyStatus(row.status);
+        return <NTag type={typeMap}>{row.status_desc}</NTag>;
       }
     },
     {

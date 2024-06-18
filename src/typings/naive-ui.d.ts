@@ -18,6 +18,8 @@ declare namespace NaiveUI {
    */
   type CustomColumnKey = 'operate' | '_dateInfo';
 
+  type ComponentsBasicsType = 'default' | 'info' | 'warning' | 'error' | 'success' | 'primary';
+
   type SetTableColumnKey<C, T> = Omit<C, 'key'> & { key: keyof T | CustomColumnKey };
 
   type TableData = Api.Common.CommonRecord<object>;
