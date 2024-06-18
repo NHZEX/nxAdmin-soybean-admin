@@ -1,5 +1,6 @@
 import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { ApiResponseError } from './shared';
+import type { NxAxiosRequestConfig } from './axios';
 
 export type ContentType =
   | 'text/html'
@@ -71,13 +72,7 @@ export type MappedType<R extends ResponseType, JsonType = any> = R extends keyof
 
 export type CustomAxiosRequestConfig<R extends ResponseType = 'json'> = Omit<AxiosRequestConfig, 'responseType'> & {
   responseType?: R;
-  // 是否启用鉴权流程
-  authorization?: boolean;
-  // 是否直接导出响应数据
-  extractLevel?: 0 | 1 | 2;
-  // 是否静默错误通知
-  silentErrorNotify?: boolean;
-};
+} & NxAxiosRequestConfig;
 
 export interface RequestInstanceCommon<T> {
   cancelRequest: (requestId: string) => void;
