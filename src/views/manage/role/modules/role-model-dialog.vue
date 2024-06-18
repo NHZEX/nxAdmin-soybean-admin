@@ -7,6 +7,9 @@ import { $t } from '@/locales';
 import { CommonLegacyStatusLabel } from '@/enum/system-manage';
 import PermissionTreeOptions from '@/components/manage/permission/permission-tree-options.vue';
 import { useBoolean } from '~/packages/hooks';
+import { useAppStore } from '@/store/modules/app';
+
+const appStore = useAppStore();
 
 type PermissionSet = Api.SystemManage.PermissionSet;
 
@@ -154,7 +157,9 @@ watch(visible, () => {
   <NModal
     v-model:show="visible"
     preset="dialog"
-    width="600px"
+    :style="{
+      width: '800px'
+    }"
     :title="title"
     :show-icon="false"
     :mask-closable="false"
@@ -162,21 +167,47 @@ watch(visible, () => {
   >
     <NSpin :show="loading">
       <NForm ref="formRef" :model="model" :rules="rules">
-        <NFormItem :label="$t('page.manage.role.roleName')" path="name">
-          <NInput v-model:value.trim="model.name" :placeholder="$t('page.manage.role.form.roleName')" />
-        </NFormItem>
-        <NFormItem :label="$t('page.manage.role.roleStatus')" path="status">
-          <NRadioGroup v-model:value="model.status">
-            <NRadio v-for="[value, label] in CommonLegacyStatusLabel" :key="value" :value="value" :label="label" />
-          </NRadioGroup>
-        </NFormItem>
-        <NFormItem v-if="lazyLoadState.bool" label="权限列表">
-          <PermissionTreeOptions
-            ref="permissionTreeOptionsIns"
-            v-model:permission="selectedPermission"
-            :create-mode="isCreateOperate"
-          ></PermissionTreeOptions>
-        </NFormItem>
+        <NSplit
+          :direction="appStore.isMobile ? 'vertical' : 'horizontal'"
+          :size="appStore.isMobile ? '160px' : '260px'"
+          min="160px"
+          max="300px"
+          :disabled="true"
+        >
+          <template #1>
+            <div
+              :class="{
+                'h-full': !appStore.isMobile,
+                'border-r-2': !appStore.isMobile,
+                'pr-2': !appStore.isMobile
+              }"
+            >
+              <NFormItem :label="$t('page.manage.role.roleName')" path="name">
+                <NInput v-model:value.trim="model.name" :placeholder="$t('page.manage.role.form.roleName')" />
+              </NFormItem>
+              <NFormItem :label="$t('page.manage.role.roleStatus')" path="status">
+                <NRadioGroup v-model:value="model.status">
+                  <NRadio
+                    v-for="[value, label] in CommonLegacyStatusLabel"
+                    :key="value"
+                    :value="value"
+                    :label="label"
+                  />
+                </NRadioGroup>
+              </NFormItem>
+            </div>
+          </template>
+          <template #2>
+            <NFormItem v-if="lazyLoadState.bool" label="权限列表" class="pl-2">
+              <PermissionTreeOptions
+                ref="permissionTreeOptionsIns"
+                v-model:permission="selectedPermission"
+                :create-mode="isCreateOperate"
+                class="w-100%"
+              ></PermissionTreeOptions>
+            </NFormItem>
+          </template>
+        </NSplit>
       </NForm>
     </NSpin>
     <template #action>
