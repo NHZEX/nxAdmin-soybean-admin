@@ -7,31 +7,31 @@ import { useSvgIcon } from '@/hooks/common/icon';
  * Filter auth routes by roles
  *
  * @param routes Auth routes
- * @param roles Roles
+ * @param permissions Roles
  */
-export function filterAuthRoutesByRoles(routes: ElegantConstRoute[], roles: string[]) {
-  return routes.flatMap(route => filterAuthRouteByRoles(route, roles));
+export function filterAuthRoutesByRoles(routes: ElegantConstRoute[], permissions: Set<string>) {
+  return routes.flatMap(route => filterAuthRouteByRoles(route, permissions));
 }
 
 /**
  * Filter auth route by roles
  *
  * @param route Auth route
- * @param roles Roles
+ * @param permissions Roles
  */
-function filterAuthRouteByRoles(route: ElegantConstRoute, roles: string[]) {
+function filterAuthRouteByRoles(route: ElegantConstRoute, permissions: Set<string>) {
   const routeRoles = (route.meta && route.meta.roles) || [];
 
   // if the route's "roles" is empty, then it is allowed to access
   const isEmptyRoles = !routeRoles.length;
 
   // if the user's role is included in the route's "roles", then it is allowed to access
-  const hasPermission = routeRoles.some(role => roles.includes(role));
+  const hasPermission = routeRoles.some(role => permissions.has(role));
 
   const filterRoute = { ...route };
 
   if (filterRoute.children?.length) {
-    filterRoute.children = filterRoute.children.flatMap(item => filterAuthRouteByRoles(item, roles));
+    filterRoute.children = filterRoute.children.flatMap(item => filterAuthRouteByRoles(item, permissions));
   }
 
   return hasPermission || isEmptyRoles ? [filterRoute] : [];
