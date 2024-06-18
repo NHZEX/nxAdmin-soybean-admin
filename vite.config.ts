@@ -18,6 +18,9 @@ export default defineConfig(configEnv => {
       }
     },
     css: {
+      modules: {
+        localsConvention: 'camelCase'
+      },
       preprocessorOptions: {
         scss: {
           additionalData: `@use "./src/styles/scss/global.scss" as *;`
