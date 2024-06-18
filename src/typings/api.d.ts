@@ -129,6 +129,7 @@ declare namespace Api {
     type PermissionNode = {
       name: string;
       children?: PermissionNode[];
+      isLeaf: boolean;
       [allow: number]: string;
       title: string;
       desc: string;

@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import type { TreeOption } from 'naive-ui';
 import { usePermissionTree } from '@/hooks/manage/permission-tree';
 import style from './permission-tree-options.module.css';
@@ -26,12 +26,22 @@ const loading = ref(false);
 const permissionTreeService = usePermissionTree({
   enableMountedLoader: false
 });
+
+const treeData = permissionTreeService.treeData;
+const editCheckedKeysSet = ref<string[] | null>(null);
+const editIndeterminateKeysSet = ref<string[] | null>(null);
+
+const currentExpandedKeys = ref<PermissionSet>([]);
+const expandTouchFlag = ref<number>(0);
+
 watch(permissionSet, value => {
   if (initialPermissionSet.value === null) {
     if (Array.isArray(value)) {
       initialPermissionSet.value = value.sort((a, b) => a.localeCompare(b));
+      currentExpandedKeys.value = treeData.value.map(d => d.name);
     } else {
       initialPermissionSet.value = null;
+      currentExpandedKeys.value = [];
     }
   }
 });
@@ -66,10 +76,6 @@ const initialPermissionKeysSet = computed<{
     keys
   };
 });
-
-const treeData = permissionTreeService.treeData;
-const editCheckedKeysSet = ref<string[] | null>(null);
-const editIndeterminateKeysSet = ref<string[] | null>(null);
 
 const mixedCheckedKeysSet = computed<string[]>({
   get() {
@@ -106,10 +112,29 @@ const defaultExpandedKeys = computed(() => {
   return treeData.value.map(d => d.name);
 });
 
-const expandTouchFlag = ref<number>(0);
+function expandTreeNode() {
+  if (expandTouchFlag.value++ === 0) {
+    currentExpandedKeys.value = [...defaultExpandedKeys.value];
+  } else {
+    for (const [key, item] of permissionTreeService.nodes.value.entries()) {
+      if (item.isLeaf) {
+        continue;
+      }
+      if (!currentExpandedKeys.value.includes(key)) {
+        currentExpandedKeys.value.push(key);
+      }
+    }
+    expandTouchFlag.value = 0;
+  }
+}
+
+function collapseTreeNode() {
+  currentExpandedKeys.value = [];
+}
 
 function reset() {
   expandTouchFlag.value = 1;
+  currentExpandedKeys.value = [];
   if (props.createMode) {
     editCheckedKeysSet.value = [];
     editIndeterminateKeysSet.value = [];
@@ -124,6 +149,9 @@ async function reload() {
   loading.value = true;
   try {
     await permissionTreeService.reload();
+    await nextTick(() => {
+      currentExpandedKeys.value = [...defaultExpandedKeys.value];
+    });
   } finally {
     loading.value = false;
   }
@@ -148,15 +176,17 @@ function matchNodeStatusClass(key: string, checked: boolean): string {
 
 const renderLabel = (info: { option: TreeOption; checked: boolean; selected: boolean }) => {
   return (
-    <span
+    <div
       class={{
         [matchNodeStatusClass(info.option.name as string, info.checked)]: true
       }}
     >
       {info.option.name} ({info.option.desc})
-    </span>
+    </div>
   );
 };
+
+const renderSuffix = () => <span>+</span>;
 
 onMounted(() => {});
 
@@ -166,22 +196,32 @@ defineExpose({
 </script>
 
 <template>
-  <NTree
-    v-model:checked-keys="mixedCheckedKeysSet"
-    v-model:indeterminate-keys="mixedIndeterminateKeysSet"
-    block-line
-    :data="treeData"
-    key-field="name"
-    label-field="desc"
-    children-field="children"
-    :default-expanded-keys="defaultExpandedKeys"
-    expand-on-click
-    show-line
-    cascade
-    checkable
-    :selectable="false"
-    :render-label="renderLabel"
-  />
+  <div>
+    <NButtonGroup>
+      <NButton @click="expandTreeNode">展开</NButton>
+      <NButton @click="collapseTreeNode">收起</NButton>
+    </NButtonGroup>
+    <NTree
+      v-model:checked-keys="mixedCheckedKeysSet"
+      v-model:indeterminate-keys="mixedIndeterminateKeysSet"
+      v-model:expanded-keys="currentExpandedKeys"
+      :default-expanded-keys="defaultExpandedKeys"
+      block-line
+      :data="treeData"
+      key-field="name"
+      label-field="desc"
+      children-field="children"
+      expand-on-click
+      show-line
+      cascade
+      checkable
+      :selectable="false"
+      :render-label="renderLabel"
+      :render-suffix="renderSuffix"
+      virtual-scroll
+      class="max-h-md"
+    />
+  </div>
 </template>
 
 <style scoped></style>
