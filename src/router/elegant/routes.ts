@@ -210,10 +210,11 @@ export const generatedRoutes: GeneratedRoute[] = [
         path: '/manage/about',
         component: 'view.manage_about',
         meta: {
-          title: '关于',
+          title: 'manage_about',
           icon: 'fluent:book-information-24-regular',
           order: 10,
-          roles: ['admin']
+          roles: ['admin'],
+          i18nKey: 'route.manage_about'
         }
       },
       {
