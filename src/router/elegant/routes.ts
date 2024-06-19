@@ -40,17 +40,6 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
-    name: 'about',
-    path: '/about',
-    component: 'layout.base$view.about',
-    meta: {
-      title: 'about',
-      i18nKey: 'route.about',
-      icon: 'fluent:book-information-24-regular',
-      order: 10
-    }
-  },
-  {
     name: 'function',
     path: '/function',
     component: 'layout.base',
@@ -217,6 +206,17 @@ export const generatedRoutes: GeneratedRoute[] = [
     },
     children: [
       {
+        name: 'manage_about',
+        path: '/manage/about',
+        component: 'view.manage_about',
+        meta: {
+          title: '关于',
+          icon: 'fluent:book-information-24-regular',
+          order: 10,
+          roles: ['admin']
+        }
+      },
+      {
         name: 'manage_menu',
         path: '/manage/menu',
         component: 'view.manage_menu',
@@ -224,7 +224,7 @@ export const generatedRoutes: GeneratedRoute[] = [
           title: 'manage_menu',
           i18nKey: 'route.manage_menu',
           icon: 'material-symbols:route',
-          order: 3,
+          order: 999,
           roles: ['admin'],
           keepAlive: true
         }
