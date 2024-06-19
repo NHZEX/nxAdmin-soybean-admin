@@ -78,7 +78,7 @@ const { columns, columnChecks, data, loading, getData, mobilePagination, searchP
       align: 'center',
       width: 130,
       render: row => (
-        <div class="flex-center gap-8px">
+        <div class="flex-center justify-end gap-8px">
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             {$t('common.edit')}
           </NButton>
