@@ -657,7 +657,7 @@ declare namespace App {
   /** Service namespace */
   namespace Service {
     /** Other baseURL key */
-    type OtherBaseURLKey = 'demo' | 'nxAdmin';
+    type OtherBaseURLKey = 'demo';
 
     interface ServiceConfigItem {
       /** The backend service base url */

@@ -25,11 +25,9 @@ export const request: FlatRequestInstance<RequestInstanceState, App.Service.Resp
   RequestInstanceState
 >(
   {
-    // baseURL, // todo 当测试对接没问题后在替换为 baseURL
-    baseURL: otherBaseURL.nxAdmin,
+    baseURL,
     headers: {
       'X-Requested-With': 'XMLHttpRequest'
-      // apifoxToken: 'XL299LiMEDZ0H5h3A29PxwQXdMJqWyY2'
     }
   },
   {
