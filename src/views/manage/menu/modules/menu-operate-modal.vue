@@ -6,7 +6,6 @@ import { $t } from '@/locales';
 import { enableStatusOptions, menuIconTypeOptions, menuTypeOptions } from '@/constants/business';
 import SvgIcon from '@/components/custom/svg-icon.vue';
 import { getLocalIcons } from '@/utils/icon';
-import { fetchGetAllRoles } from '@/service/api';
 import {
   getLayoutAndPage,
   getPathParamFromRoutePath,
@@ -168,16 +167,8 @@ const layoutOptions: CommonType.Option[] = [
 const roleOptions = ref<CommonType.Option<string>[]>([]);
 
 async function getRoleOptions() {
-  const { error, data } = await fetchGetAllRoles();
-
-  if (!error) {
-    const options = data.map(item => ({
-      label: item.roleName,
-      value: item.roleCode
-    }));
-
-    roleOptions.value = [...options];
-  }
+  // 以弃用
+  roleOptions.value = [];
 }
 
 function handleInitModel() {
