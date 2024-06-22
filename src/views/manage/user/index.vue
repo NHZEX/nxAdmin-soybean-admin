@@ -10,7 +10,17 @@ import UserSearch from './modules/user-search.vue';
 
 const appStore = useAppStore();
 
-const { columns, columnChecks, data, getData, loading, mobilePagination, searchParams, resetSearchParams } = useTable({
+const {
+  columns,
+  columnChecks,
+  data,
+  getData,
+  getDataByPage,
+  loading,
+  mobilePagination,
+  searchParams,
+  resetSearchParams
+} = useTable({
   apiFn: wrapApiFn(fetchUserList) as typeof fetchUserList,
   showTotal: true,
   apiParams: {
@@ -159,7 +169,7 @@ function edit(id: number) {
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <UserSearch v-model:model="searchParams" @reset="resetSearchParams" @search="getData({ resetFirstPage: true })" />
+    <UserSearch v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
     <NCard :title="$t('page.manage.user.title')" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
       <template #header-extra>
         <TableHeaderOperation
