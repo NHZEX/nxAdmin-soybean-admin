@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import type { MentionOption, MenuProps } from 'naive-ui';
+import type { MentionOption, MenuInst, MenuProps } from 'naive-ui';
 import { SimpleScrollbar } from '@sa/materials';
 import type { RouteKey } from '@elegant-router/types';
 import { useAppStore } from '@/store/modules/app';
@@ -29,6 +29,8 @@ const themeStore = useThemeStore();
 const routeStore = useRouteStore();
 const { routerPushByKey } = useRouterPush();
 
+const menuInstRef = ref<MenuInst | null>(null);
+
 const naiveMenus = computed(() => props.menus as unknown as MentionOption[]);
 
 const isHorizontal = computed(() => props.mode === 'horizontal');
@@ -53,7 +55,9 @@ function updateExpandedKeys() {
     expandedKeys.value = [];
     return;
   }
-  expandedKeys.value = routeStore.getSelectedMenuKeyPath(selectedKey.value);
+  // 改为Tab激活状态不重置菜单展开项
+  // expandedKeys.value = routeStore.getSelectedMenuKeyPath(selectedKey.value);
+  menuInstRef.value?.showOption(selectedKey.value);
 }
 
 function handleClickMenu(key: RouteKey) {
@@ -74,6 +78,7 @@ watch(
 <template>
   <SimpleScrollbar>
     <NMenu
+      ref="menuInstRef"
       v-model:expanded-keys="expandedKeys"
       :mode="mode"
       :value="selectedKey"
