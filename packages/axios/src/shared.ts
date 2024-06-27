@@ -5,6 +5,7 @@ import type {
   AxiosResponse,
   InternalAxiosRequestConfig
 } from 'axios';
+import { isIdempotentRequestError, isNetworkError } from 'axios-retry';
 import { sanitizeHTML } from '@sa/utils';
 import axios from 'axios';
 
@@ -109,4 +110,9 @@ export function httpStatusToText(code: number): string {
     default:
       return `unknown-${code}`;
   }
+}
+
+export function axiosRetryIsNetworkOrIdempotentRequestError(error: AxiosError): boolean {
+  // http-code 500 不是可重试的状态
+  return isNetworkError(error) || (error.response?.status !== 500 && isIdempotentRequestError(error));
 }
