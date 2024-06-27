@@ -612,7 +612,6 @@ declare namespace App {
         confirmPwd: FormMsg;
         code: FormMsg;
         email: FormMsg;
-        asciiString: FormMsg;
       };
       dropdown: Record<Global.DropdownKey, string>;
       icon: {
