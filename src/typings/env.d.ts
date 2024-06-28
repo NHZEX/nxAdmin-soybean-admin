@@ -115,6 +115,8 @@ declare namespace Env {
     readonly VITE_ICONIFY_URL?: string;
     /** Used to differentiate storage across different domains */
     readonly VITE_STORAGE_PREFIX?: string;
+    /** Set dev server port */
+    readonly VITE_DEV_SERVER_PORT?: number;
   }
 }
 
