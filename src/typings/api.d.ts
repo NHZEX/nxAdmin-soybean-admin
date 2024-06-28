@@ -123,7 +123,7 @@ declare namespace Api {
    *
    * backend api module: "systemManage"
    */
-  export namespace SystemManage {
+  namespace SystemManage {
     type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size' | 'page' | 'limit'>;
 
     type PermissionNode = {

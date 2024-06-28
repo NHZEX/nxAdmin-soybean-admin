@@ -17,8 +17,6 @@ function handleLogoutEx() {
   authStore.resetStore();
 }
 
-console.debug('todo baseURL', baseURL);
-
 // request 重新声明临时解决错误 Vue: request implicitly has type any because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
 export const request: FlatRequestInstance<RequestInstanceState, App.Service.Response> = createFlatRequest<
   App.Service.Response,
