@@ -47,7 +47,11 @@ export default defineConfig(
       'no-warning-comments': 'warn',
       'no-continue': 'off',
       'no-control-regex': 'off',
-      'no-plusplus': 'off'
+      'no-plusplus': 'off',
+      'no-else-return': 'off',
+      'no-unused-vars': 'warn',
+      'vue/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': 'off' // 必须使用 off，不然提示插件找不到
     }
   }
 );
