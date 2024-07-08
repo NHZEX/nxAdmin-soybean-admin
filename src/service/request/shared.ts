@@ -81,7 +81,7 @@ export function createResponseError<T = any, D = any>(
     response: state.response
   });
 
-  if (instance !== undefined && state.innerError instanceof AxiosError) {
+  if (instance !== undefined && state.innerError instanceof AxiosError && !error.isCancel()) {
     const silentErrorNotify = state.innerError?.config?.silentErrorNotify ?? true;
     if (silentErrorNotify) {
       notifyResponseError(error, instance);
