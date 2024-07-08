@@ -100,17 +100,21 @@ function createCommonRequest<ResponseData = any>(
     },
     async (error: AxiosError<ResponseData>) => {
       if (!axios.isAxiosError(error)) {
-        return new ApiResponseError(`fault: ${error}`, {
-          code: -1,
-          innerError: error
-        });
+        return Promise.reject(
+          new ApiResponseError(`fault: ${error}`, {
+            code: -1,
+            innerError: error
+          })
+        );
       }
       if (axios.isCancel(error)) {
         error.message = `request canceled: ${error.message}`;
-        return new ApiResponseError(`request canceled: ${error.message}`, {
-          code: -1,
-          innerError: error
-        });
+        return Promise.reject(
+          new ApiResponseError(`request canceled: ${error.message}`, {
+            code: -1,
+            innerError: error
+          })
+        );
       }
       const result = await opts.onError(error);
 
