@@ -9,6 +9,7 @@ declare namespace Env {
 
   /** Interface for import.meta */
   interface ImportMeta extends ImportMetaEnv {
+    readonly MODE: 'prod' | 'test' | 'production' | 'development';
     /** The base url of the application */
     readonly VITE_BASE_URL: string;
     /** The title of the application */
@@ -117,6 +118,8 @@ declare namespace Env {
     readonly VITE_STORAGE_PREFIX?: string;
     /** Set dev server port */
     readonly VITE_DEV_SERVER_PORT?: number;
+    /** 简化配置模式 */
+    readonly VITE_SIMPLIFY_MODE?: CommonType.YesOrNo;
   }
 }
 

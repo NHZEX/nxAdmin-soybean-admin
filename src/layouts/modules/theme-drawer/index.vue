@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useAppStore } from '@/store/modules/app';
 import { $t } from '@/locales';
+import { useThemeStore } from '@/store/modules/theme';
 import DarkMode from './modules/dark-mode.vue';
 import LayoutMode from './modules/layout-mode.vue';
 import ThemeColor from './modules/theme-color.vue';
@@ -12,6 +13,7 @@ defineOptions({
 });
 
 const appStore = useAppStore();
+const themeStore = useThemeStore();
 </script>
 
 <template>
@@ -19,8 +21,8 @@ const appStore = useAppStore();
     <NDrawerContent :title="$t('theme.themeDrawerTitle')" :native-scrollbar="false" closable>
       <DarkMode />
       <LayoutMode />
-      <ThemeColor />
-      <PageFun />
+      <ThemeColor v-if="!themeStore.simplifyMode" />
+      <PageFun v-if="!themeStore.simplifyMode" />
       <template #footer>
         <ConfigOperation />
       </template>

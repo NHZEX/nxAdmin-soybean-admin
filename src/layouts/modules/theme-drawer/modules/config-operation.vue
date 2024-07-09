@@ -49,7 +49,7 @@ onMounted(() => {
   <div class="w-full flex justify-between">
     <textarea id="themeConfigCopyTarget" v-model="dataClipboardText" class="absolute opacity-0 -z-1" />
     <NButton type="error" ghost @click="handleReset">{{ $t('theme.configOperation.resetConfig') }}</NButton>
-    <div ref="domRef" data-clipboard-target="#themeConfigCopyTarget">
+    <div v-if="!themeStore.simplifyMode" ref="domRef" data-clipboard-target="#themeConfigCopyTarget">
       <NButton type="primary">{{ $t('theme.configOperation.copyConfig') }}</NButton>
     </div>
   </div>

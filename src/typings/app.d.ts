@@ -97,6 +97,8 @@ declare namespace App {
         /** Whether float the footer to the right when the layout is 'horizontal-mix' */
         right: boolean;
       };
+      /** 简化配置模式 */
+      simplifyMode: boolean;
     }
 
     interface OtherColor {

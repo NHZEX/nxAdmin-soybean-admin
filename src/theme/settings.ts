@@ -46,7 +46,8 @@ export const themeSettings: App.Theme.ThemeSetting = {
     fixed: false,
     height: 48,
     right: true
-  }
+  },
+  simplifyMode: (import.meta.env.VITE_SIMPLIFY_MODE || (import.meta.env.MODE === 'test' ? 'N' : 'Y')) === 'Y'
 };
 
 /**
