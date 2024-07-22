@@ -23,6 +23,10 @@ declare module "@elegant-router/types" {
     "home": "/home";
     "iframe-page": "/iframe-page/:url";
     "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?";
+    "manage": "/manage";
+    "manage_about": "/manage/about";
+    "manage_role": "/manage/role";
+    "manage_user": "/manage/user";
   };
 
   /**
@@ -37,7 +41,7 @@ declare module "@elegant-router/types" {
 
   /**
    * custom route key
-   */
+   */ 
   export type CustomRouteKey = Extract<
     RouteKey,
     | "root"
@@ -46,7 +50,7 @@ declare module "@elegant-router/types" {
 
   /**
    * the generated route key
-   */
+   */ 
   export type GeneratedRouteKey = Exclude<RouteKey, CustomRouteKey>;
 
   /**
@@ -60,6 +64,7 @@ declare module "@elegant-router/types" {
     | "home"
     | "iframe-page"
     | "login"
+    | "manage"
   >;
 
   /**
@@ -82,6 +87,9 @@ declare module "@elegant-router/types" {
     | "iframe-page"
     | "login"
     | "home"
+    | "manage_about"
+    | "manage_role"
+    | "manage_user"
   >;
 
   /**
@@ -153,7 +161,7 @@ declare module "@elegant-router/types" {
         component: `view.${K}`;
       }
     : never;
-
+  
   /**
    * the center level route
    */
@@ -176,7 +184,7 @@ declare module "@elegant-router/types" {
         children: (CenterLevelRoute<GetChildRouteKey<K>> | LastLevelRoute<GetChildRouteKey<K>>)[];
       }
     : never;
-
+  
   /**
    * the custom first level route
    */

@@ -40,17 +40,6 @@ export const generatedRoutes: GeneratedRoute[] = [
     }
   },
   {
-    name: 'about',
-    path: '/about',
-    component: 'layout.base$view.about',
-    meta: {
-      title: 'about',
-      i18nKey: 'route.about',
-      icon: 'fluent:book-information-24-regular',
-      order: 10
-    }
-  },
-  {
     name: 'home',
     path: '/home',
     component: 'layout.base$view.home',
@@ -111,19 +100,6 @@ export const generatedRoutes: GeneratedRoute[] = [
         }
       },
       {
-        name: 'manage_menu',
-        path: '/manage/menu',
-        component: 'view.manage_menu',
-        meta: {
-          title: 'manage_menu',
-          i18nKey: 'route.manage_menu',
-          icon: 'material-symbols:route',
-          order: 999,
-          roles: ['admin'],
-          keepAlive: true
-        }
-      },
-      {
         name: 'manage_role',
         path: '/manage/role',
         component: 'view.manage_role',
@@ -146,92 +122,7 @@ export const generatedRoutes: GeneratedRoute[] = [
           order: 1,
           roles: ['admin.user']
         }
-      },
-      {
-        name: 'manage_user-detail',
-        path: '/manage/user-detail/:id',
-        component: 'view.manage_user-detail',
-        props: true,
-        meta: {
-          title: 'manage_user-detail',
-          i18nKey: 'route.manage_user-detail',
-          hideInMenu: true,
-          roles: ['admin.user'],
-          activeMenu: 'manage_user'
-        }
       }
     ]
-  },
-  {
-    name: 'multi-menu',
-    path: '/multi-menu',
-    component: 'layout.base',
-    meta: {
-      title: 'multi-menu',
-      i18nKey: 'route.multi-menu',
-      order: 8
-    },
-    children: [
-      {
-        name: 'multi-menu_first',
-        path: '/multi-menu/first',
-        meta: {
-          title: 'multi-menu_first',
-          i18nKey: 'route.multi-menu_first',
-          order: 1
-        },
-        children: [
-          {
-            name: 'multi-menu_first_child',
-            path: '/multi-menu/first/child',
-            component: 'view.multi-menu_first_child',
-            meta: {
-              title: 'multi-menu_first_child',
-              i18nKey: 'route.multi-menu_first_child'
-            }
-          }
-        ]
-      },
-      {
-        name: 'multi-menu_second',
-        path: '/multi-menu/second',
-        meta: {
-          title: 'multi-menu_second',
-          i18nKey: 'route.multi-menu_second',
-          order: 2
-        },
-        children: [
-          {
-            name: 'multi-menu_second_child',
-            path: '/multi-menu/second/child',
-            meta: {
-              title: 'multi-menu_second_child',
-              i18nKey: 'route.multi-menu_second_child'
-            },
-            children: [
-              {
-                name: 'multi-menu_second_child_home',
-                path: '/multi-menu/second/child/home',
-                component: 'view.multi-menu_second_child_home',
-                meta: {
-                  title: 'multi-menu_second_child_home',
-                  i18nKey: 'route.multi-menu_second_child_home'
-                }
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    name: 'user-center',
-    path: '/user-center',
-    component: 'layout.base$view.user-center',
-    meta: {
-      title: 'user-center',
-      i18nKey: 'route.user-center',
-      hideInMenu: true
-    }
   }
 ];
