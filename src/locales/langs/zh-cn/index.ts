@@ -26,6 +26,7 @@ const local: App.I18n.Schema = {
     deleteSuccess: '删除成功',
     confirmDelete: '确认删除吗？',
     edit: '编辑',
+    warning: '警告',
     error: '错误',
     index: '序号',
     keywordSearch: '请输入关键词搜索',
@@ -66,13 +67,14 @@ const local: App.I18n.Schema = {
       dark: '暗黑模式',
       auto: '跟随系统'
     },
-    grayscale: '灰度模式',
+    grayscale: '灰色模式',
     layoutMode: {
       title: '布局模式',
       vertical: '左侧菜单模式',
       'vertical-mix': '左侧菜单混合模式',
       horizontal: '顶部菜单模式',
-      'horizontal-mix': '顶部菜单混合模式'
+      'horizontal-mix': '顶部菜单混合模式',
+      reverseHorizontalMix: '一级菜单与子级菜单位置反转'
     },
     recommendColor: '应用推荐算法的颜色',
     recommendColorDesc: '推荐颜色的算法参照',
@@ -206,6 +208,8 @@ const local: App.I18n.Schema = {
       devDep: '开发依赖'
     },
     home: {
+      branchDesc:
+        '为了方便大家开发和更新合并，我们对main分支的代码进行了精简，只保留了首页菜单，其余内容已移至example分支进行维护。预览地址显示的内容即为example分支的内容。',
       greeting: '早安，{userName}, 今天又是充满活力的一天!',
       weatherDesc: '今日多云转晴，20℃ - 25℃!',
       projectCount: '项目数',
@@ -231,45 +235,6 @@ const local: App.I18n.Schema = {
         desc5: 'Soybean 刚才把工作台页面随便写了一些，凑合能看了！'
       },
       creativity: '创意'
-    },
-    function: {
-      tab: {
-        tabOperate: {
-          title: '标签页操作',
-          addTab: '添加标签页',
-          addTabDesc: '跳转到关于页面',
-          closeTab: '关闭标签页',
-          closeCurrentTab: '关闭当前标签页',
-          closeAboutTab: '关闭"关于"标签页',
-          addMultiTab: '添加多标签页',
-          addMultiTabDesc1: '跳转到多标签页页面',
-          addMultiTabDesc2: '跳转到多标签页页面(带有查询参数)'
-        },
-        tabTitle: {
-          title: '标签页标题',
-          changeTitle: '修改标题',
-          change: '修改',
-          resetTitle: '重置标题',
-          reset: '重置'
-        }
-      },
-      multiTab: {
-        routeParam: '路由参数',
-        backTab: '返回 function_tab'
-      },
-      toggleAuth: {
-        toggleAccount: '切换账号',
-        authHook: '权限钩子函数 `hasAuth`',
-        superAdminVisible: '超级管理员可见',
-        adminVisible: '管理员可见',
-        adminOrUserVisible: '管理员和用户可见'
-      },
-      request: {
-        repeatedErrorOccurOnce: '重复请求错误只出现一次',
-        repeatedError: '重复请求错误',
-        repeatedErrorMsg1: '自定义请求错误 1',
-        repeatedErrorMsg2: '自定义请求错误 2'
-      }
     },
     manage: {
       common: {
