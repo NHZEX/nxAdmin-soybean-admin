@@ -7,6 +7,7 @@ import { useThemeStore } from '@/store/modules/theme';
 import { useRouteStore } from '@/store/modules/route';
 import { useRouterPush } from '@/hooks/common/router';
 import { GLOBAL_SIDER_MENU_ID } from '@/constants/app';
+import type { MenuInst } from 'naive-ui';
 
 defineOptions({
   name: 'VerticalMenu'
@@ -17,6 +18,8 @@ const appStore = useAppStore();
 const themeStore = useThemeStore();
 const routeStore = useRouteStore();
 const { routerPushByKeyWithMetaQuery } = useRouterPush();
+
+const menuInstRef = ref<MenuInst | undefined>();
 
 const inverted = computed(() => !themeStore.darkMode && themeStore.sider.inverted);
 
@@ -36,7 +39,9 @@ function updateExpandedKeys() {
     expandedKeys.value = [];
     return;
   }
-  expandedKeys.value = routeStore.getSelectedMenuKeyPath(selectedKey.value);
+  // 改为Tab激活状态不重置菜单展开项
+  // expandedKeys.value = routeStore.getSelectedMenuKeyPath(selectedKey.value);
+  menuInstRef.value?.showOption(selectedKey.value);
 }
 
 watch(
@@ -52,6 +57,7 @@ watch(
   <Teleport :to="`#${GLOBAL_SIDER_MENU_ID}`">
     <SimpleScrollbar>
       <NMenu
+        ref="menuInstRef"
         v-model:expanded-keys="expandedKeys"
         mode="vertical"
         :value="selectedKey"
