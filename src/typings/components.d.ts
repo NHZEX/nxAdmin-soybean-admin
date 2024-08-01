@@ -88,6 +88,7 @@ declare module 'vue' {
     NTooltip: typeof import('naive-ui')['NTooltip']
     NTree: typeof import('naive-ui')['NTree']
     PermissionTreeOptions: typeof import('./../components/manage/permission/permission-tree-options.vue')['default']
+    NWatermark: typeof import('naive-ui')['NWatermark']
     PinToggler: typeof import('./../components/common/pin-toggler.vue')['default']
     ReloadButton: typeof import('./../components/common/reload-button.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

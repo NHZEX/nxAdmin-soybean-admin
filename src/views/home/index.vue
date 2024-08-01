@@ -4,7 +4,7 @@ import HeaderBanner from './modules/header-banner.vue';
 
 <template>
   <NSpace vertical :size="16">
-    <NAlert :title="$t('common.warning')" type="warning" closable>
+    <NAlert :title="$t('common.warning')" type="warning">
       {{ $t('page.home.branchDesc') }}
     </NAlert>
     <HeaderBanner />
