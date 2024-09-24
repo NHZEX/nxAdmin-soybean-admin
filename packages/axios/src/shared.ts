@@ -5,9 +5,9 @@ import type {
   AxiosResponse,
   InternalAxiosRequestConfig
 } from 'axios';
-import { isIdempotentRequestError, isNetworkError } from 'axios-retry';
+import { isNetworkOrIdempotentRequestError } from 'axios-retry';
 import { sanitizeHTML } from '@sa/utils';
-import axios from 'axios';
+import axios, { isCancel } from 'axios';
 
 export function getContentType(config: InternalAxiosRequestConfig) {
   const contentType: AxiosHeaderValue = config.headers?.['Content-Type'] || 'application/json';
@@ -113,6 +113,9 @@ export function httpStatusToText(code: number): string {
 }
 
 export function axiosRetryIsNetworkOrIdempotentRequestError(error: AxiosError): boolean {
+  if (isCancel(error)) {
+    return false;
+  }
   // http-code 500 不是可重试的状态
-  return isNetworkError(error) || (error.response?.status !== 500 && isIdempotentRequestError(error));
+  return isNetworkOrIdempotentRequestError(error) && (error as AxiosError).response?.status !== 500;
 }
