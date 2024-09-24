@@ -97,6 +97,7 @@
     "vite-plugin-progress": "0.0.7",
     "vite-plugin-svg-icons": "2.0.1",
     "vite-plugin-vue-devtools": "7.3.7",
+    "vite-plugin-zip-pack": "^1.2.3",
     "vue-eslint-parser": "9.4.3",
     "vue-tsc": "2.0.29"
   },
