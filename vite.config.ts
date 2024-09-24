@@ -9,6 +9,8 @@ export default defineConfig(configEnv => {
 
   const buildTime = getBuildTime();
 
+  const enableProxy = configEnv.command === 'serve' && !configEnv.isPreview;
+
   return {
     base: viteEnv.VITE_BASE_URL,
     resolve: {
@@ -23,7 +25,8 @@ export default defineConfig(configEnv => {
       },
       preprocessorOptions: {
         scss: {
-          additionalData: `@use "./src/styles/scss/global.scss" as *;`
+          api: 'modern-compiler',
+          additionalData: `@use "@/styles/scss/global.scss" as *;`
         }
       }
     },
@@ -35,7 +38,7 @@ export default defineConfig(configEnv => {
       host: '0.0.0.0',
       port: viteEnv.VITE_DEV_SERVER_PORT || 9527,
       open: true,
-      proxy: createViteProxy(viteEnv, configEnv.command === 'serve'),
+      proxy: createViteProxy(viteEnv, enableProxy),
       fs: {
         cachedChecks: false
       }

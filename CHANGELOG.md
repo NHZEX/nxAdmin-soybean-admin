@@ -1,6 +1,114 @@
 # Changelog
 
 
+## [v1.3.7](https://github.com/soybeanjs/soybean-admin/compare/v1.3.6...v1.3.7) (2024-09-21)
+
+### &nbsp;&nbsp;&nbsp;🚨 Breaking Changes
+
+- **projects**: update scss config &nbsp;-&nbsp; by @soybeanjs [<samp>(24e9e)</samp>](https://github.com/soybeanjs/soybean-admin/commit/24e9e57)
+
+### &nbsp;&nbsp;&nbsp;🐞 Bug Fixes
+
+- **projects**: fix global-tab click conflict with contextmenu &nbsp;-&nbsp; by @soybeanjs [<samp>(3e72c)</samp>](https://github.com/soybeanjs/soybean-admin/commit/3e72c3b)
+
+### &nbsp;&nbsp;&nbsp;💅 Refactors
+
+- **packages**: @sa/materials: remove tab close shortcut by mouse &nbsp;-&nbsp; by @soybeanjs [<samp>(4da58)</samp>](https://github.com/soybeanjs/soybean-admin/commit/4da588c)
+
+### &nbsp;&nbsp;&nbsp;🏡 Chore
+
+- **deps**: update deps &nbsp;-&nbsp; by @soybeanjs [<samp>(baefd)</samp>](https://github.com/soybeanjs/soybean-admin/commit/baefdfd)
+
+### &nbsp;&nbsp;&nbsp;❤️ Contributors
+
+[![soybeanjs](https://github.com/soybeanjs.png?size=48)](https://github.com/soybeanjs)&nbsp;&nbsp;
+
+## [v1.3.6](https://github.com/soybeanjs/soybean-admin/compare/v1.3.5...v1.3.6) (2024-09-20)
+
+### &nbsp;&nbsp;&nbsp;🐞 Bug Fixes
+
+- **components**:
+  - fix VerticalMixMenu name &nbsp;-&nbsp; by @soybeanjs [<samp>(20f8e)</samp>](https://github.com/soybeanjs/soybean-admin/commit/20f8ed3)
+- **projects**:
+  - fix click global-tab in iPad. fixed #624 &nbsp;-&nbsp; by @soybeanjs in https://github.com/soybeanjs/soybean-admin/issues/624 [<samp>(04d05)</samp>](https://github.com/soybeanjs/soybean-admin/commit/04d0564)
+  - when the roles filter submenu is empty, the parent menu is not excluded. fixed #621. &nbsp;-&nbsp; by @Azir-11 in https://github.com/soybeanjs/soybean-admin/issues/626 and https://github.com/soybeanjs/soybean-admin/issues/621 [<samp>(0ac95)</samp>](https://github.com/soybeanjs/soybean-admin/commit/0ac95bd)
+
+### &nbsp;&nbsp;&nbsp;🛠 Optimizations
+
+- **projects**:
+  - optimize code &nbsp;-&nbsp; by @soybeanjs [<samp>(6561f)</samp>](https://github.com/soybeanjs/soybean-admin/commit/6561f0b)
+  - optimize code &nbsp;-&nbsp; by @soybeanjs [<samp>(38eeb)</samp>](https://github.com/soybeanjs/soybean-admin/commit/38eeb67)
+  - remove defineModel setting，enabled by default &nbsp;-&nbsp; by @yanbowe in https://github.com/soybeanjs/soybean-admin/issues/620 [<samp>(60bbd)</samp>](https://github.com/soybeanjs/soybean-admin/commit/60bbd2d)
+
+### &nbsp;&nbsp;&nbsp;📖 Documentation
+
+- **projects**: update CHANGELOG &nbsp;-&nbsp; by @soybeanjs [<samp>(5baf1)</samp>](https://github.com/soybeanjs/soybean-admin/commit/5baf19d)
+
+### &nbsp;&nbsp;&nbsp;🏡 Chore
+
+- **deps**:
+  - update deps &nbsp;-&nbsp; by @soybeanjs [<samp>(207d6)</samp>](https://github.com/soybeanjs/soybean-admin/commit/207d6eb)
+  - update deps &nbsp;-&nbsp; by @soybeanjs [<samp>(f3562)</samp>](https://github.com/soybeanjs/soybean-admin/commit/f35627e)
+
+### &nbsp;&nbsp;&nbsp;❤️ Contributors
+
+[![soybeanjs](https://github.com/soybeanjs.png?size=48)](https://github.com/soybeanjs)&nbsp;&nbsp;[![Azir-11](https://github.com/Azir-11.png?size=48)](https://github.com/Azir-11)&nbsp;&nbsp;[![yanbowe](https://github.com/yanbowe.png?size=48)](https://github.com/yanbowe)&nbsp;&nbsp;
+
+## [v1.3.5](https://github.com/soybeanjs/soybean-admin/compare/v1.3.4...v1.3.5) (2024-09-07)
+
+### &nbsp;&nbsp;&nbsp;🚀 Features
+
+- **packages**:
+  - @sa/axios: add response to flatRequest when success &nbsp;-&nbsp; by @soybeanjs [<samp>(c4e16)</samp>](https://github.com/soybeanjs/soybean-admin/commit/c4e1610)
+- **projects**:
+  - README.zh_CN.md 添加合作推广 &nbsp;-&nbsp; by @PZ-18664918826 in https://github.com/soybeanjs/soybean-admin/issues/601 [<samp>(2fa40)</samp>](https://github.com/soybeanjs/soybean-admin/commit/2fa400b)
+  - Add more commit types according to Apache specifications &nbsp;-&nbsp; by @Azir-11 in https://github.com/soybeanjs/soybean-admin/issues/610 [<samp>(878d9)</samp>](https://github.com/soybeanjs/soybean-admin/commit/878d9c3)
+  - does the configuration support automatic updates. close#612 &nbsp;-&nbsp; by @Azir-11 in https://github.com/soybeanjs/soybean-admin/issues/617 and https://github.com/soybeanjs/soybean-admin/issues/612 [<samp>(4c9f4)</samp>](https://github.com/soybeanjs/soybean-admin/commit/4c9f4e0)
+  - add app error handler. close #587 &nbsp;-&nbsp; by @soybeanjs in https://github.com/soybeanjs/soybean-admin/issues/587 [<samp>(be855)</samp>](https://github.com/soybeanjs/soybean-admin/commit/be8556c)
+
+### &nbsp;&nbsp;&nbsp;🐞 Bug Fixes
+
+- **deps**:
+  - move json5 from devDependencies to dependencies to support production usage &nbsp;-&nbsp; by @mufeng889 in https://github.com/soybeanjs/soybean-admin/issues/618 [<samp>(7cb43)</samp>](https://github.com/soybeanjs/soybean-admin/commit/7cb43fc)
+- **projects**:
+  - avoid retrieving cached HTML &nbsp;-&nbsp; by @Azir-11 in https://github.com/soybeanjs/soybean-admin/issues/605 [<samp>(ef6cf)</samp>](https://github.com/soybeanjs/soybean-admin/commit/ef6cf93)
+  - fix login redirect &nbsp;-&nbsp; by @soybeanjs [<samp>(3830e)</samp>](https://github.com/soybeanjs/soybean-admin/commit/3830ec7)
+  - fix vertical-mix-menu when sider collapse. fixed #608 &nbsp;-&nbsp; by @soybeanjs in https://github.com/soybeanjs/soybean-admin/issues/608 [<samp>(c3f1f)</samp>](https://github.com/soybeanjs/soybean-admin/commit/c3f1f69)
+  - fix breadcrumb when activeMenu is parent menu. fixed #589 &nbsp;-&nbsp; by @soybeanjs in https://github.com/soybeanjs/soybean-admin/issues/589 [<samp>(79b2a)</samp>](https://github.com/soybeanjs/soybean-admin/commit/79b2a28)
+  - fix refresh token when meet multi requests. fixed #581 &nbsp;-&nbsp; by @soybeanjs in https://github.com/soybeanjs/soybean-admin/issues/581 [<samp>(27b52)</samp>](https://github.com/soybeanjs/soybean-admin/commit/27b5222)
+- **types**:
+  - fix the type of TableApiFn &nbsp;-&nbsp; by @Azir-11 in https://github.com/soybeanjs/soybean-admin/issues/599 [<samp>(26c93)</samp>](https://github.com/soybeanjs/soybean-admin/commit/26c93df)
+
+### &nbsp;&nbsp;&nbsp;🛠 Optimizations
+
+- **projects**: optimize menu selectedKey &nbsp;-&nbsp; by @soybeanjs [<samp>(531bf)</samp>](https://github.com/soybeanjs/soybean-admin/commit/531bfaf)
+
+### &nbsp;&nbsp;&nbsp;📖 Documentation
+
+- **projects**:
+  - update README &nbsp;-&nbsp; by @mufeng889 in https://github.com/soybeanjs/soybean-admin/issues/594 [<samp>(a8f92)</samp>](https://github.com/soybeanjs/soybean-admin/commit/a8f923e)
+  - update README &nbsp;-&nbsp; by @soybeanjs [<samp>(e9a2e)</samp>](https://github.com/soybeanjs/soybean-admin/commit/e9a2ee4)
+  - update README &nbsp;-&nbsp; by @soybeanjs [<samp>(73e91)</samp>](https://github.com/soybeanjs/soybean-admin/commit/73e917a)
+  - update the location of important information in the document &nbsp;-&nbsp; by **Azir** [<samp>(9c012)</samp>](https://github.com/soybeanjs/soybean-admin/commit/9c012c7)
+
+### &nbsp;&nbsp;&nbsp;🏡 Chore
+
+- **deps**:
+  - update deps &nbsp;-&nbsp; by @soybeanjs [<samp>(a1c14)</samp>](https://github.com/soybeanjs/soybean-admin/commit/a1c14a1)
+  - update deps &nbsp;-&nbsp; by @soybeanjs [<samp>(7fa55)</samp>](https://github.com/soybeanjs/soybean-admin/commit/7fa5590)
+  - update deps &nbsp;-&nbsp; by @soybeanjs [<samp>(a44ea)</samp>](https://github.com/soybeanjs/soybean-admin/commit/a44ea62)
+- **projects**:
+  - use json5 resolve env `VITE_OTHER_SERVICE_BASE_URL` & fix proxy enable &nbsp;-&nbsp; by @soybeanjs [<samp>(b16a9)</samp>](https://github.com/soybeanjs/soybean-admin/commit/b16a963)
+
+### &nbsp;&nbsp;&nbsp;🎨 Styles
+
+- **projects**: rename script czh to commit:zh &nbsp;-&nbsp; by @Azir-11 in https://github.com/soybeanjs/soybean-admin/issues/597 [<samp>(5094f)</samp>](https://github.com/soybeanjs/soybean-admin/commit/5094f0e)
+
+### &nbsp;&nbsp;&nbsp;❤️ Contributors
+
+[![soybeanjs](https://github.com/soybeanjs.png?size=48)](https://github.com/soybeanjs)&nbsp;&nbsp;[![mufeng889](https://github.com/mufeng889.png?size=48)](https://github.com/mufeng889)&nbsp;&nbsp;[![Azir-11](https://github.com/Azir-11.png?size=48)](https://github.com/Azir-11)&nbsp;&nbsp;[![PZ-18664918826](https://github.com/PZ-18664918826.png?size=48)](https://github.com/PZ-18664918826)&nbsp;&nbsp;
+[Azir](mailto:2075125282@qq.com),&nbsp;
+
 ## [v1.3.4](https://github.com/honghuangdc/soybean-admin/compare/v1.3.3...v1.3.4) (2024-08-01)
 
 ### &nbsp;&nbsp;&nbsp;🚨 Breaking Changes

@@ -68,9 +68,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
       if (pass) {
         await routeStore.initAuthRoute();
 
-        if (redirect) {
-          await redirectFromLogin();
-        }
+        await redirectFromLogin(redirect);
 
         if (routeStore.isInitAuthRoute) {
           window.$notification?.success({

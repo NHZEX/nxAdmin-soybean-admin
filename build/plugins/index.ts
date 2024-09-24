@@ -12,11 +12,7 @@ import { setupHtmlPlugin } from './html';
 
 export function setupVitePlugins(viteEnv: Env.ImportMeta, buildTime: string, mode: string) {
   const plugins: PluginOption = [
-    vue({
-      script: {
-        defineModel: true
-      }
-    }),
+    vue(),
     vueJsx(),
     VueDevtools(),
     setupElegantRouter(),

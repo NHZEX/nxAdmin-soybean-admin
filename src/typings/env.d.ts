@@ -116,6 +116,8 @@ declare namespace Env {
     readonly VITE_ICONIFY_URL?: string;
     /** Used to differentiate storage across different domains */
     readonly VITE_STORAGE_PREFIX?: string;
+    /** Whether to automatically detect updates after configuring application packaging */
+    readonly VITE_AUTOMATICALLY_DETECT_UPDATE?: CommonType.YesOrNo;
     /** Set dev server port */
     readonly VITE_DEV_SERVER_PORT?: number;
     /** 简化配置模式 */
