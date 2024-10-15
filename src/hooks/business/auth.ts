@@ -11,7 +11,16 @@ export function useAuth() {
     return authStore.testAccessPermission(codes);
   }
 
+  function getUserInfo() {
+    if (!authStore.isLogin) {
+      return undefined;
+    }
+
+    return authStore.userInfo;
+  }
+
   return {
-    hasAuth
+    hasAuth,
+    getUserInfo
   };
 }
