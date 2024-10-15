@@ -129,7 +129,7 @@ export const request: FlatRequestInstance<RequestInstanceState, App.Service.Resp
       }
       const response = error.response;
       const respData = response?.data;
-      const httpCode = response!.status;
+      const httpCode = response?.status;
       try {
         if (isPlainObject(respData)) {
           const errno = respData?.code || -1;
@@ -165,7 +165,7 @@ export const request: FlatRequestInstance<RequestInstanceState, App.Service.Resp
           );
         }
         return createResponseError(
-          'unknown error',
+          `unknown error: ${error.code}, ${error.message}`,
           {
             code: -1,
             innerError: error
