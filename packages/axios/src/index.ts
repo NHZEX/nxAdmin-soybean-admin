@@ -29,7 +29,7 @@ function createCommonRequest<ResponseData = any>(
   // config axios retry
   if (opts.enableAutoRetry) {
     const retryOptions = createRetryOptions(axiosConf);
-    axiosRetry(instance, retryOptions);
+    axiosRetry(instance as any, retryOptions);
   }
 
   function configAbortSignal(requestId: string, config: InternalAxiosRequestConfig) {
@@ -44,7 +44,9 @@ function createCommonRequest<ResponseData = any>(
     config.signal = controller.signal;
     abortControllerMap.set(requestId, controller);
     controller.signal.addEventListener('abort', () => {
-      abortControllerMap.has(requestId) && abortControllerMap.delete(requestId);
+      if (abortControllerMap.has(requestId)) {
+        abortControllerMap.delete(requestId);
+      }
     });
   }
 
@@ -65,13 +67,6 @@ function createCommonRequest<ResponseData = any>(
   instance.interceptors.response.use(
     async response => {
       const requestConfig = response.request as AxiosRequestConfig;
-
-      /**
-       * 弃用判断，不在支持通过 responseType !== json 来判断是否失败
-       *
-       * const responseType: ResponseType = (response.config?.responseType as ResponseType) || 'json'; true ===
-       * (responseType !== 'json' || opts.isBackendSuccess(response)) 完成响应验证
-       */
 
       // 二进制数据则直接返回原始结果
       if (requestConfig.responseType === 'blob' || requestConfig.responseType === 'arraybuffer') {
