@@ -14,7 +14,9 @@ export function setupVitePlugins(viteEnv: Env.ImportMeta, buildTime: string, mod
   const plugins: PluginOption = [
     vue(),
     vueJsx(),
-    VueDevtools(),
+    VueDevtools({
+      launchEditor: viteEnv.VITE_DEV_DEVTOOLS_LAUNCH_EDITOR || undefined
+    }),
     setupElegantRouter(),
     setupUnocss(viteEnv),
     ...setupUnplugin(viteEnv),
