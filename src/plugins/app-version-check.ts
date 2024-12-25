@@ -113,6 +113,7 @@ async function checkHtmlUpdate(): Promise<boolean> {
   try {
     // localReleaseDate 包含数据代表非首次加载
     if (localReleaseDate && etag !== localReleaseEtag) {
+      // eslint-disable-next-line no-console
       console.debug('checkHtmlUpdate: new version', date, etag);
       return true;
     }

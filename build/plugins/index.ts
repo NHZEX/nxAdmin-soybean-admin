@@ -34,7 +34,8 @@ export function setupVitePlugins(viteEnv: Env.ImportMeta, buildTime: string, mod
         outDir: path.resolve(__dirname, '..', '..'),
         outFileName: viteEnv.VITE_DIST_ZIP_FILENAME || 'release.zip',
         done: () => {
-          console.log('dist pack done', (new Date()).toLocaleString());
+          // eslint-disable-next-line no-console
+          console.log('dist pack done', new Date().toLocaleString());
         }
       })
     );
