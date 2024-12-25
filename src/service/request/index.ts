@@ -152,7 +152,7 @@ export const request: FlatRequestInstance<RequestInstanceState, App.Service.Resp
               errno = data.errno;
               message = data.message;
             }
-          } catch (e) {
+          } catch {
             message = truncateString(result, 128, '[omit...]');
           }
           return createResponseError(
