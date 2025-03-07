@@ -66,19 +66,25 @@ function createCommonRequest<ResponseData = any>(
 
   instance.interceptors.response.use(
     async response => {
-      const requestConfig = response.request as AxiosRequestConfig;
+      if (opts.onResponseValidation) {
+        if (await opts.onResponseValidation(response, instance)) {
+          return Promise.resolve(response);
+        }
+      } else {
+        const requestConfig = response.request as AxiosRequestConfig;
 
-      // 二进制数据则直接返回原始结果
-      if (requestConfig.responseType === 'blob' || requestConfig.responseType === 'arraybuffer') {
-        return Promise.resolve(response);
-      }
-      // 204 空响应直接返回原始结果
-      if (response.status === 204) {
-        return Promise.resolve(response);
-      }
-      // 响应结果是一个符合预期的结构
-      if (isNumber(response.data?.code) && response.data?.code >= 0) {
-        return Promise.resolve(response);
+        // 二进制数据则直接返回原始结果
+        if (requestConfig.responseType === 'blob' || requestConfig.responseType === 'arraybuffer') {
+          return Promise.resolve(response);
+        }
+        // 204 空响应直接返回原始结果
+        if (response.status === 204) {
+          return Promise.resolve(response);
+        }
+        // 响应结果是一个符合预期的结构
+        if (isNumber(response.data?.code) && response.data?.code >= 0) {
+          return Promise.resolve(response);
+        }
       }
 
       const backendError = new AxiosError<ResponseData>(
@@ -204,7 +210,7 @@ export function createFlatRequest<ResponseData = any, State = Record<string, unk
         return { data, error: null, response };
       }
 
-      return { data: response.data as MappedType<R, T>, error: null };
+      return { data: response.data as MappedType<R, T>, error: null, response };
     } catch (error) {
       return { data: null, error, response: (error as AxiosError<ResponseData>).response };
     }

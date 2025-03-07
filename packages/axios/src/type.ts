@@ -41,6 +41,8 @@ export interface RequestOption<ResponseData = any> {
     response: AxiosResponse<ResponseData>,
     instance: AxiosInstance
   ) => Promise<AxiosResponse | null> | Promise<void>;
+  /** 自定义响应结果验证 */
+  onResponseValidation: (response: AxiosResponse<ResponseData>, instance: AxiosInstance) => boolean | Promise<boolean>;
   /**
    * transform backend response when the responseType is json
    *
