@@ -1,13 +1,13 @@
-import { BACKEND_ERROR_CODE, type FlatRequestInstance, createFlatRequest, createRequest } from '@sa/axios';
 import { isPlainObject } from 'lodash-es';
+import { BACKEND_ERROR_CODE, type FlatRequestInstance, createFlatRequest, createRequest } from '@sa/axios';
+import { createResponseError } from '@/service/request/shared';
 import { useAuthStore } from '@/store/modules/auth';
-import { $t } from '@/locales';
 import { localStg } from '@/utils/storage';
 import { getServiceBaseURL } from '@/utils/service';
-import { RESPONSE_UNRECOGNIZED } from '~/packages/axios/src/constant';
-import { createResponseError } from '@/service/request/shared';
-import { truncateString } from '~/packages/utils';
+import { $t } from '@/locales';
 import type { RequestInstanceState } from './type';
+import { RESPONSE_UNRECOGNIZED } from '~/packages/axios/src/constant';
+import { truncateString } from '~/packages/utils';
 
 const isHttpProxy = import.meta.env.DEV && import.meta.env.VITE_HTTP_PROXY === 'Y';
 const { baseURL, otherBaseURL } = getServiceBaseURL(import.meta.env, isHttpProxy);
