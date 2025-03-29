@@ -179,8 +179,8 @@ declare namespace App {
 
     /** The router push options */
     type RouterPushOptions = {
-      query?: Record<string, string>;
-      params?: Record<string, string>;
+      query?: Record<string, string | number | undefined | null>;
+      params?: Record<string, string | number | undefined | null>;
     };
 
     /** The global header props */
