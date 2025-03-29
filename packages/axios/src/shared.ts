@@ -5,9 +5,9 @@ import type {
   AxiosResponse,
   InternalAxiosRequestConfig
 } from 'axios';
+import axios, { isCancel } from 'axios';
 import { isNetworkOrIdempotentRequestError } from 'axios-retry';
 import { sanitizeHTML } from '@sa/utils';
-import axios, { isCancel } from 'axios';
 
 export function getContentType(config: InternalAxiosRequestConfig) {
   const contentType: AxiosHeaderValue = config.headers?.['Content-Type'] || 'application/json';

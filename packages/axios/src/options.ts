@@ -10,6 +10,7 @@ export function createDefaultOptions<ResponseData = any>(options?: Partial<Reque
     onRequest: async config => config,
     isBackendSuccess: _response => true,
     onBackendFail: async () => {},
+    onResponseValidation: () => true,
     transformBackendResponse: async response => response.data,
     onError: async () => Promise.resolve(null)
   };
@@ -22,6 +23,7 @@ export function createDefaultOptions<ResponseData = any>(options?: Partial<Reque
 export function createRetryOptions(config?: Partial<CreateAxiosDefaults>) {
   const retryConfig: IAxiosRetryConfig = {
     retries: 1,
+    // @ts-ignore 这里误报
     retryCondition: axiosRetryIsNetworkOrIdempotentRequestError
   };
 
