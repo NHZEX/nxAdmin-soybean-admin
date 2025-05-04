@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAppStore } from '@/store/modules/app';
-import { $t } from '@/locales';
 import { useThemeStore } from '@/store/modules/theme';
+import { $t } from '@/locales';
 import DarkMode from './modules/dark-mode.vue';
 import LayoutMode from './modules/layout-mode.vue';
 import ThemeColor from './modules/theme-color.vue';

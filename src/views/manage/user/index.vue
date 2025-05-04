@@ -1,10 +1,10 @@
 <script setup lang="tsx">
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { fetchDeleteUser, fetchUserList } from '@/service/api';
-import { $t } from '@/locales';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate, wrapApiFn } from '@/hooks/common/table';
 import { formatUnix } from '@/utils/common';
+import { $t } from '@/locales';
 import UserModelDialog from './modules/user-model-dialog.vue';
 import UserSearch from './modules/user-search.vue';
 

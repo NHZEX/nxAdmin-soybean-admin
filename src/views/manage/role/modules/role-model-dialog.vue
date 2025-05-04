@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, toRaw, watch } from 'vue';
 import { isPlainObject } from 'lodash-es';
-import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { fetchRoleInfo, fetchSaveRole } from '@/service/api';
+import { useAppStore } from '@/store/modules/app';
+import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
 import { CommonLegacyStatusLabel } from '@/enum/system-manage';
 import PermissionTreeOptions from '@/components/manage/permission/permission-tree-options.vue';
 import { useBoolean } from '~/packages/hooks';
-import { useAppStore } from '@/store/modules/app';
 
 const appStore = useAppStore();
 

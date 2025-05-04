@@ -2,21 +2,19 @@ import path from 'node:path';
 import type { PluginOption } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
-import VueDevtools from 'vite-plugin-vue-devtools';
 import progress from 'vite-plugin-progress';
 import zipPack from 'vite-plugin-zip-pack';
 import { setupElegantRouter } from './router';
 import { setupUnocss } from './unocss';
 import { setupUnplugin } from './unplugin';
 import { setupHtmlPlugin } from './html';
+import { setupDevtoolsPlugin } from './devtools';
 
 export function setupVitePlugins(viteEnv: Env.ImportMeta, buildTime: string, mode: string) {
   const plugins: PluginOption = [
     vue(),
     vueJsx(),
-    VueDevtools({
-      launchEditor: viteEnv.VITE_DEV_DEVTOOLS_LAUNCH_EDITOR || undefined
-    }),
+    setupDevtoolsPlugin(viteEnv),
     setupElegantRouter(),
     setupUnocss(viteEnv),
     ...setupUnplugin(viteEnv),

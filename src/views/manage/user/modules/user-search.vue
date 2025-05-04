@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { $t } from '@/locales';
-import { useNaiveForm } from '@/hooks/common/form';
-import { SystemUserLegacyStatusLabel, SystemUserTypeLabel } from '@/enum/system-manage';
 import { REG_STR_ASCII } from '@/constants/reg';
+import { useNaiveForm } from '@/hooks/common/form';
+import { $t } from '@/locales';
+import { SystemUserLegacyStatusLabel, SystemUserTypeLabel } from '@/enum/system-manage';
 
 defineOptions({
   name: 'UserSearch'

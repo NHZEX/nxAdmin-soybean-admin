@@ -121,10 +121,10 @@ declare namespace Env {
     readonly VITE_AUTOMATICALLY_DETECT_UPDATE?: CommonType.YesOrNo;
     /** show proxy url log in terminal */
     readonly VITE_PROXY_LOG?: CommonType.YesOrNo;
+    /** The launch editor */
+    readonly VITE_DEVTOOLS_LAUNCH_EDITOR?: import('vite-plugin-vue-devtools').VitePluginVueDevToolsOptions['launchEditor'];
     /** Set dev server port */
     readonly VITE_DEV_SERVER_PORT?: number;
-    /** Set dev server launch editor */
-    readonly VITE_DEV_DEVTOOLS_LAUNCH_EDITOR?: string;
     /** 简化配置模式 */
     readonly VITE_SIMPLIFY_MODE?: CommonType.YesOrNo;
   }

@@ -1,4 +1,5 @@
 import { defineConfig } from '@soybeanjs/eslint-config';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
 
 export default defineConfig(
   {
@@ -27,6 +28,9 @@ export default defineConfig(
     languageOptions: {
       globals: {}
     },
+    plugins: {
+      '@typescript-eslint': tsPlugin
+    },
     rules: {
       'vue/multi-word-component-names': [
         'warn',
@@ -43,6 +47,14 @@ export default defineConfig(
         }
       ],
       'unocss/order-attributify': 'off',
+      // === 新增规则 ===
+      '@typescript-eslint/ban-ts-comment': [
+        'warn',
+        {
+          minimumDescriptionLength: 3,
+          'ts-ignore': 'allow-with-description'
+        }
+      ],
       // === 自定义规则开始 ===
       'no-warning-comments': 'warn',
       'no-continue': 'off',

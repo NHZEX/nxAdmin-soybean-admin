@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, toRaw, watch } from 'vue';
-import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { fetchRoleOptions, fetchSaveUser, fetchUserInfo } from '@/service/api';
+import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
 import { SystemUserLegacyStatusLabel, SystemUserType, SystemUserTypeLabel } from '@/enum/system-manage';
 

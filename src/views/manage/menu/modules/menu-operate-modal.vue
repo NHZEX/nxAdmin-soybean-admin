@@ -1,11 +1,11 @@
 <script setup lang="tsx">
 import { computed, reactive, ref, watch } from 'vue';
 import type { SelectOption } from 'naive-ui';
-import { useFormRules, useNaiveForm } from '@/hooks/common/form';
-import { $t } from '@/locales';
 import { enableStatusOptions, menuIconTypeOptions, menuTypeOptions } from '@/constants/business';
-import SvgIcon from '@/components/custom/svg-icon.vue';
+import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { getLocalIcons } from '@/utils/icon';
+import { $t } from '@/locales';
+import SvgIcon from '@/components/custom/svg-icon.vue';
 import {
   getLayoutAndPage,
   getPathParamFromRoutePath,

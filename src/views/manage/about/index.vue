@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { $t } from '@/locales';
 import { useAppStore } from '@/store/modules/app';
+import { $t } from '@/locales';
 import { dependencies, devDependencies, name, version } from '~/package.json';
 
 const appStore = useAppStore();
