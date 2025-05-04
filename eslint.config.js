@@ -60,10 +60,10 @@ export default defineConfig(
       'no-continue': 'off',
       'no-control-regex': 'off',
       'no-plusplus': 'off',
-      'no-else-return': 'off',
-      'no-unused-vars': 'warn',
-      'vue/no-unused-vars': 'warn',
-      '@typescript-eslint/no-unused-vars': 'off' // 必须使用 off，不然提示插件找不到
+      'no-else-return': 'off'
+      // 'no-unused-vars': 'warn',
+      // 'vue/no-unused-vars': 'warn',
+      // '@typescript-eslint/no-unused-vars': 'off' // 必须使用 off，否则提示插件找不到
     }
   }
 );
