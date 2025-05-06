@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import progress from 'vite-plugin-progress';
 import zipPack from 'vite-plugin-zip-pack';
+import { VxeResolver, lazyImport } from 'vite-plugin-lazy-import';
 import { setupElegantRouter } from './router';
 import { setupUnocss } from './unocss';
 import { setupUnplugin } from './unplugin';
@@ -18,6 +19,16 @@ export function setupVitePlugins(viteEnv: Env.ImportMeta, buildTime: string, mod
     setupElegantRouter(),
     setupUnocss(viteEnv),
     ...setupUnplugin(viteEnv),
+    lazyImport({
+      resolvers: [
+        VxeResolver({
+          libraryName: 'vxe-table'
+        }),
+        VxeResolver({
+          libraryName: 'vxe-pc-ui'
+        })
+      ]
+    }),
     progress(),
     setupHtmlPlugin(buildTime)
   ];

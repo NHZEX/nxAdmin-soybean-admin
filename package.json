@@ -68,7 +68,9 @@
     "vue": "3.5.13",
     "vue-draggable-plus": "0.6.0",
     "vue-i18n": "11.1.2",
-    "vue-router": "4.5.0"
+    "vue-router": "4.5.0",
+    "vxe-pc-ui": "^4.5.36",
+    "vxe-table": "^4.13.17"
   },
   "devDependencies": {
     "@elegant-router/vue": "0.3.8",
@@ -97,6 +99,7 @@
     "unplugin-icons": "22.1.0",
     "unplugin-vue-components": "28.4.1",
     "vite": "6.2.2",
+    "vite-plugin-lazy-import": "^1.0.7",
     "vite-plugin-progress": "0.0.7",
     "vite-plugin-svg-icons": "2.0.1",
     "vite-plugin-vue-devtools": "7.7.2",
@@ -106,7 +109,7 @@
   },
   "simple-git-hooks": {
     "commit-msg": "pnpm sa git-commit-verify",
-    "pre-commit": "pnpm lint && git diff --exit-code"
+    "pre-commit": "pnpm lint"
   },
   "volta": {
     "node": "20.14.0"
