@@ -142,8 +142,19 @@ declare namespace Api {
       valid: boolean;
     };
 
+    type PermissionNodeEx = Omit<PermissionNode, 'allow'> & {
+      allow: {
+        name: string;
+        desc: string;
+      }[];
+    };
+
     type PermissionTree = PermissionNode[];
     type PermissionSet = string[];
+
+    type PermissionBatchUpdateParams = {
+      [name: string]: { sort: number; desc: string };
+    };
 
     /** role */
     type Role = Common.LegacyCommonRecord<{

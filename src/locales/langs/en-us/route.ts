@@ -8,7 +8,8 @@ const route: App.I18n.Schema['route'] = {
   manage: 'System Manage',
   manage_about: 'About',
   manage_user: 'User Manage',
-  manage_role: 'Role Manage'
+  manage_role: 'Role Manage',
+  manage_permission: 'Permission Manage'
 };
 
 export default route;

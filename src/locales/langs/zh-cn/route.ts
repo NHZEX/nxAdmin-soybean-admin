@@ -8,7 +8,8 @@ const route: App.I18n.Schema['route'] = {
   manage: '系统管理',
   manage_about: '关于',
   manage_user: '用户管理',
-  manage_role: '角色管理'
+  manage_role: '角色管理',
+  manage_permission: '权限管理'
 };
 
 export default route;
