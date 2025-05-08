@@ -40,6 +40,7 @@
     "dev:prod": "vite --mode prod --no-open",
     "gen-route": "sa gen-route",
     "lint": "eslint . --fix",
+    "lint-diff": "sa eslint -e diff",
     "prepare": "simple-git-hooks",
     "preview": "vite preview",
     "release": "sa release",
@@ -109,7 +110,7 @@
   },
   "simple-git-hooks": {
     "commit-msg": "pnpm sa git-commit-verify",
-    "pre-commit": "pnpm lint"
+    "pre-commit": "pnpm sa git-pre-commit-check-warp -e pnpm -- sa eslint -e diff"
   },
   "volta": {
     "node": "20.14.0"
