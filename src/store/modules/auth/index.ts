@@ -14,6 +14,7 @@ import { clearAuthStorage, getToken, hasPermission } from './shared';
 
 export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   const route = useRoute();
+  const authStore = useAuthStore();
   const routeStore = useRouteStore();
   const tabStore = useTabStore();
   const { toLogin, redirectFromLogin } = useRouterPush(false);
@@ -36,8 +37,6 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
   /** Reset auth store */
   async function resetStore() {
-    const authStore = useAuthStore();
-
     recordUserId();
 
     clearAuthStorage();

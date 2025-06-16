@@ -115,6 +115,9 @@ const local: App.I18n.Schema = {
       },
       multilingual: {
         visible: 'Display multilingual button'
+      },
+      globalSearch: {
+        visible: 'Display GlobalSearch button'
       }
     },
     tab: {
