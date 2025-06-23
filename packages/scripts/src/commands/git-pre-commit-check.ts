@@ -1,5 +1,6 @@
 import { execSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import path from 'node:path';
 import process from 'node:process';
 
 let gitDirCache: string | null = null;
@@ -62,10 +63,28 @@ function checkSpecialStates() {
   return false;
 }
 
-export function gitPreCommitCheckWarp(command: string[]) {
+function checkCommitMessage(allowSkipWip: boolean = true) {
+  const gitPath = execSync('git rev-parse --show-toplevel').toString().trim();
+  const commitMsgFile = path.join(gitPath, '.git', 'COMMIT_EDITMSG');
+
+  const commitMsg = readFileSync(commitMsgFile, 'utf-8').trim();
+
+  if (commitMsg.startsWith('wip:') && allowSkipWip) {
+    console.log('⏭  检测到 WIP 提交，跳过 pre-commit 钩子执行');
+    return false;
+  }
+
+  return true;
+}
+
+export function gitPreCommitCheckWarp(command: string[], allowSkipWip: boolean = true) {
   try {
     if (checkDangerStates() || checkSpecialStates()) {
       console.log('⏭  已跳过 pre-commit 钩子执行');
+      process.exit(0);
+    }
+
+    if (!checkCommitMessage(allowSkipWip)) {
       process.exit(0);
     }
 
