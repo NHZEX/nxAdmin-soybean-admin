@@ -113,7 +113,8 @@
     "pre-commit": "pnpm sa git-pre-commit-check-warp -e pnpm -- sa eslint -e diff"
   },
   "volta": {
-    "node": "20.14.0"
+    "node": "20.19.3",
+    "pnpm": "10.12.4"
   },
   "website": "https://admin.soybeanjs.cn"
 }
