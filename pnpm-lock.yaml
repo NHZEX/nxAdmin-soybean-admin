@@ -75,11 +75,11 @@ importers:
         specifier: 4.5.1
         version: 4.5.1(vue@3.5.17(typescript@5.8.3))
       vxe-pc-ui:
-        specifier: ^4.6.49
-        version: 4.6.49(vue@3.5.17(typescript@5.8.3))
+        specifier: ^4.7.7
+        version: 4.7.7(vue@3.5.17(typescript@5.8.3))
       vxe-table:
-        specifier: ^4.13.52
-        version: 4.13.52(vue@3.5.17(typescript@5.8.3))
+        specifier: ^4.14.3
+        version: 4.14.3(vue@3.5.17(typescript@5.8.3))
     devDependencies:
       '@elegant-router/vue':
         specifier: 0.3.8
@@ -1849,8 +1849,8 @@ packages:
     peerDependencies:
       vue: ^3.5.0
 
-  '@vxe-ui/core@4.2.1':
-    resolution: {integrity: sha512-tfImwvh9vRPEER+VRqPKEqU6lgB8y9u1O7iMC5V+mhJq/iWaJUE3EufSkfg5GQK8vBaceVtea1ydICl0Pr4j7w==}
+  '@vxe-ui/core@4.2.2':
+    resolution: {integrity: sha512-tVnizrokdX1cOpHP94D7iIvLUJUt1OZWsFp6hXmi3AYvWPLQqrrbOwZrZaM/WbDYdje84v5M1sgcWbFTZHu+mg==}
     peerDependencies:
       vue: ^3.2.0
 
@@ -4486,11 +4486,11 @@ packages:
     peerDependencies:
       vue: ^3.0.11
 
-  vxe-pc-ui@4.6.49:
-    resolution: {integrity: sha512-VqRmNHTWVUINevIn2vok3cdMFVU3ciGRCBfRFXqXcZHVSfl+z/zl+CxjjU6Orv6xs6XxJlpACY2S1I0PmyknNg==}
+  vxe-pc-ui@4.7.7:
+    resolution: {integrity: sha512-Gt5Uxfz2LdybhsBVCo3gmH6Fi4dx4UJVuxwOEUTeNDNMeNJQircEzYBtUEap8y8CId4xcmImUr6H31uyvkCIew==}
 
-  vxe-table@4.13.52:
-    resolution: {integrity: sha512-cP+H2zJNrXiu3PooOWJSh7XisT8Q0/KpjByMKbWlwt4txJrZ0xFdgxr+u+xIcSiO3pbdPAUjg7fJnZgOgFrKYw==}
+  vxe-table@4.14.3:
+    resolution: {integrity: sha512-w4GalnkQ1QQSwTYUdJk5I4JJxDNw6783Q2eK1hgI+As+tYJDURSPui+EFLbxCG9o5HDeIdaR+7USMxSTvXsp4g==}
 
   webpack-sources@3.3.3:
     resolution: {integrity: sha512-yd1RBzSGanHkitROoPFd6qsrxt+oFhg/129YzheDGqeustzX0vTZJZsSsQjVQC4yzBQ56K55XU8gaNCtIzOnTg==}
@@ -6027,7 +6027,7 @@ snapshots:
     dependencies:
       vue: 3.5.17(typescript@5.8.3)
 
-  '@vxe-ui/core@4.2.1(vue@3.5.17(typescript@5.8.3))':
+  '@vxe-ui/core@4.2.2(vue@3.5.17(typescript@5.8.3))':
     dependencies:
       dom-zindex: 1.0.6
       vue: 3.5.17(typescript@5.8.3)
@@ -8997,15 +8997,15 @@ snapshots:
       vooks: 0.2.12(vue@3.5.17(typescript@5.8.3))
       vue: 3.5.17(typescript@5.8.3)
 
-  vxe-pc-ui@4.6.49(vue@3.5.17(typescript@5.8.3)):
+  vxe-pc-ui@4.7.7(vue@3.5.17(typescript@5.8.3)):
     dependencies:
-      '@vxe-ui/core': 4.2.1(vue@3.5.17(typescript@5.8.3))
+      '@vxe-ui/core': 4.2.2(vue@3.5.17(typescript@5.8.3))
     transitivePeerDependencies:
       - vue
 
-  vxe-table@4.13.52(vue@3.5.17(typescript@5.8.3)):
+  vxe-table@4.14.3(vue@3.5.17(typescript@5.8.3)):
     dependencies:
-      vxe-pc-ui: 4.6.49(vue@3.5.17(typescript@5.8.3))
+      vxe-pc-ui: 4.7.7(vue@3.5.17(typescript@5.8.3))
     transitivePeerDependencies:
       - vue
 
