@@ -92,6 +92,16 @@ import zhCN from 'vxe-table/lib/locale/lang/zh-CN';
 VxeUI.setI18n('zh-CN', zhCN);
 VxeUI.setLanguage('zh-CN');
 
+VxeUI.setConfig({
+  size: 'medium',
+  grid: {
+    pagerConfig: {
+      pageSizes: [10, 20, 40, 50, 80, 100],
+      layouts: ['PrevJump', 'PrevPage', 'Number', 'NextPage', 'NextJump', 'Sizes', 'FullJump', 'Total']
+    }
+  }
+});
+
 function lazyVxeUI(app: App) {
   app.use(VxeAlert);
   app.use(VxeAnchor);

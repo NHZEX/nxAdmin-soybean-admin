@@ -8,6 +8,7 @@ import type {
 import type { RouteKey, RoutePath } from '@elegant-router/types';
 import { useAuthStore } from '@/store/modules/auth';
 import { useRouteStore } from '@/store/modules/route';
+import { getTabIdByRoute } from '@/store/modules/tab/shared';
 import { localStg } from '@/utils/storage';
 import { getRouteName } from '@/router/elegant/transform';
 
@@ -169,6 +170,14 @@ function handleRouteSwitch(to: RouteLocationNormalized, from: RouteLocationNorma
     next({ path: from.fullPath, replace: true, query: from.query, hash: to.hash });
 
     return;
+  }
+
+  if (!Object.hasOwn(to.params, '.:_tabId')) {
+    const tabId = getTabIdByRoute(to);
+    // eslint-disable-next-line no-console
+    console.debug(`handleRouteSwitch: set ${tabId}`);
+    // eslint-disable-next-line dot-notation
+    to.params['.:_tabId'] = tabId;
   }
 
   next();
