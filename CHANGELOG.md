@@ -1,6 +1,66 @@
 # Changelog
 
 
+## [v2.0.2](https://github.com/soybeanjs/soybean-admin/compare/v2.0.1...v2.0.2) (2025-12-23)
+
+### &nbsp;&nbsp;&nbsp;🐞 Bug Fixes
+
+- **hooks**: update pagination pageSize after data fetch. &nbsp;-&nbsp; by **Azir-11** [<samp>(64226)</samp>](https://github.com/soybeanjs/soybean-admin/commit/64226d9b)
+- **projects**: fix the incorrect judgment of home by pin tab. &nbsp;-&nbsp; by **Azir-11** [<samp>(62a43)</samp>](https://github.com/soybeanjs/soybean-admin/commit/62a43c39)
+
+### &nbsp;&nbsp;&nbsp;🏡 Chore
+
+- **deps**: update deps &nbsp;-&nbsp; by @soybeanjs [<samp>(ec9f9)</samp>](https://github.com/soybeanjs/soybean-admin/commit/ec9f9af9)
+
+### &nbsp;&nbsp;&nbsp;❤️ Contributors
+
+[![soybeanjs](https://github.com/soybeanjs.png?size=48)](https://github.com/soybeanjs)&nbsp;&nbsp;
+[Azir-11](mailto:2075125282@qq.com)
+
+## [v2.0.1](https://github.com/soybeanjs/soybean-admin/compare/v2.0.0...v2.0.1) (2025-12-04)
+
+### &nbsp;&nbsp;&nbsp;🚀 Features
+
+- **docs**:
+  - update QQ group image in README &nbsp;-&nbsp; by @soybeanjs [<samp>(46081)</samp>](https://github.com/soybeanjs/soybean-admin/commit/46081c36)
+- **projects**:
+  - support theme presets to only set partial content. &nbsp;-&nbsp; by **Azir-11** [<samp>(9da84)</samp>](https://github.com/soybeanjs/soybean-admin/commit/9da847fb)
+  - support theme perset  to override component library presets. &nbsp;-&nbsp; by **Azir-11** [<samp>(60517)</samp>](https://github.com/soybeanjs/soybean-admin/commit/605173a1)
+  - support pinning and unpinning of tabs &nbsp;-&nbsp; by **hooke** [<samp>(b8a76)</samp>](https://github.com/soybeanjs/soybean-admin/commit/b8a767d7)
+  - hybrid layout mode auto select first deepest child menu &nbsp;-&nbsp; by @paynezhuang [<samp>(94019)</samp>](https://github.com/soybeanjs/soybean-admin/commit/9401925f)
+
+### &nbsp;&nbsp;&nbsp;🐞 Bug Fixes
+
+- **docs**: update project name in ecosystem section of README &nbsp;-&nbsp; by @soybeanjs [<samp>(bb232)</samp>](https://github.com/soybeanjs/soybean-admin/commit/bb232bf8)
+- **types**: add missing property in theme presets &nbsp;-&nbsp; by **刘璐** [<samp>(4a9cf)</samp>](https://github.com/soybeanjs/soybean-admin/commit/4a9cf6c3)
+
+### &nbsp;&nbsp;&nbsp;🛠 Optimizations
+
+- **projects**: simplify some theme preset configurations. &nbsp;-&nbsp; by **Azir-11** [<samp>(c6d97)</samp>](https://github.com/soybeanjs/soybean-admin/commit/c6d97dba)
+
+### &nbsp;&nbsp;&nbsp;📖 Documentation
+
+- **projects**: add link to ecosystem document. &nbsp;-&nbsp; by **Azir-11** [<samp>(c472a)</samp>](https://github.com/soybeanjs/soybean-admin/commit/c472a943)
+
+### &nbsp;&nbsp;&nbsp;🏡 Chore
+
+- **deps**:
+  - update deps &nbsp;-&nbsp; by @soybeanjs [<samp>(f8dc6)</samp>](https://github.com/soybeanjs/soybean-admin/commit/f8dc639e)
+  - update deps &nbsp;-&nbsp; by @soybeanjs [<samp>(7cf40)</samp>](https://github.com/soybeanjs/soybean-admin/commit/7cf4083b)
+- **other**:
+  - remove Prettier's recommendation. &nbsp;-&nbsp; by **Azir-11** [<samp>(73e9a)</samp>](https://github.com/soybeanjs/soybean-admin/commit/73e9a0fe)
+- **styles**:
+  - format code &nbsp;-&nbsp; by @soybeanjs [<samp>(098cd)</samp>](https://github.com/soybeanjs/soybean-admin/commit/098cd50e)
+
+### &nbsp;&nbsp;&nbsp;🎨 Styles
+
+- **projects**: modify homepage prompt title to tip. &nbsp;-&nbsp; by **Azir-11** [<samp>(91a26)</samp>](https://github.com/soybeanjs/soybean-admin/commit/91a261c1)
+
+### &nbsp;&nbsp;&nbsp;❤️ Contributors
+
+[![soybeanjs](https://github.com/soybeanjs.png?size=48)](https://github.com/soybeanjs)&nbsp;&nbsp;[![paynezhuang](https://github.com/paynezhuang.png?size=48)](https://github.com/paynezhuang)&nbsp;&nbsp;
+[hooke](mailto:hellohooke@foxmail.com),&nbsp;[Azir-11](mailto:2075125282@qq.com),&nbsp;[刘璐](mailto:hi.alue@qq.com)
+
 ## [v2.0.0](https://github.com/soybeanjs/soybean-admin/compare/v1.3.15...v2.0.0) (2025-11-02)
 
 ### &nbsp;&nbsp;&nbsp;🚨 Breaking Changes
