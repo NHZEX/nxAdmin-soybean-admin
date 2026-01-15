@@ -10,9 +10,32 @@ export type ContentType =
   | 'application/x-www-form-urlencoded'
   | 'application/octet-stream';
 
-export interface RequestOption<ResponseData = any> {
+export type ResponseTransform<Input = any, Output = any> = (input: Input) => Output | Promise<Output>;
+
+export interface RequestOption<
+  ResponseData,
+  ApiData = ResponseData,
+  State extends Record<string, unknown> = Record<string, unknown>
+> {
   /** 是否开启自动重试 */
   enableAutoRetry: boolean;
+  /**
+   * The default state
+   */
+  defaultState?: State;
+  /**
+   * transform the response data to the api data
+   *
+   * @param response Axios response
+   */
+  transform: ResponseTransform<AxiosResponse<ResponseData>, ApiData>;
+  /**
+   * transform the response data to the api data
+   *
+   * @deprecated use `transform` instead, will be removed in the next major version v3
+   * @param response Axios response
+   */
+  transformBackendResponse: ResponseTransform<AxiosResponse<ResponseData>, ApiData>;
   /**
    * The hook before request
    *
@@ -44,12 +67,6 @@ export interface RequestOption<ResponseData = any> {
   /** 自定义响应结果验证 */
   onResponseValidation: (response: AxiosResponse<ResponseData>, instance: AxiosInstance) => boolean | Promise<boolean>;
   /**
-   * transform backend response when the responseType is json
-   *
-   * @param response Axios response
-   */
-  transformBackendResponse(response: AxiosResponse<ResponseData>): any | Promise<any>;
-  /**
    * The hook to handle error
    *
    * For example: You can show error message in this hook
@@ -76,15 +93,7 @@ export type CustomAxiosRequestConfig<R extends ResponseType = 'json'> = Omit<Axi
   responseType?: R;
 } & NxAxiosRequestConfig;
 
-export interface RequestInstanceCommon<T> {
-  /**
-   * cancel the request by request id
-   *
-   * if the request provide abort controller sign from config, it will not collect in the abort controller map
-   *
-   * @param requestId
-   */
-  cancelRequest: (requestId: string) => void;
+export interface RequestInstanceCommon<State extends Record<string, unknown>> {
   /**
    * cancel all request
    *
@@ -92,32 +101,35 @@ export interface RequestInstanceCommon<T> {
    */
   cancelAllRequest: () => void;
   /** you can set custom state in the request instance */
-  state: T;
+  state: State;
 }
 
 /** The request instance */
-export interface RequestInstance<S = Record<string, unknown>> extends RequestInstanceCommon<S> {
-  <T = any, R extends ResponseType = 'json'>(config: CustomAxiosRequestConfig<R>): Promise<MappedType<R, T>>;
+export interface RequestInstance<ApiData, State extends Record<string, unknown>> extends RequestInstanceCommon<State> {
+  <T extends ApiData = ApiData, R extends ResponseType = 'json'>(
+    config: CustomAxiosRequestConfig<R>
+  ): Promise<MappedType<R, T>>;
 }
 
-export type FlatResponseSuccessData<T = any, ResponseData = any> = {
-  data: T;
+export type FlatResponseSuccessData<ResponseData, ApiData> = {
+  data: ApiData;
   error: null;
   response: AxiosResponse<ResponseData>;
 };
 
-export type FlatResponseFailData<ResponseData = any> = {
+export type FlatResponseFailData<ResponseData> = {
   data: null;
   error: AxiosError<ResponseData>;
   response: AxiosResponse<ResponseData>;
 };
 
-export type FlatResponseData<T = any, ResponseData = any> =
-  | FlatResponseSuccessData<T, ResponseData>
+export type FlatResponseData<ResponseData, ApiData> =
+  | FlatResponseSuccessData<ResponseData, ApiData>
   | FlatResponseFailData<ResponseData>;
 
-export interface FlatRequestInstance<S = Record<string, unknown>, ResponseData = any> extends RequestInstanceCommon<S> {
-  <T = any, R extends ResponseType = 'json'>(
+export interface FlatRequestInstance<ResponseData, ApiData, State extends Record<string, unknown>>
+  extends RequestInstanceCommon<State> {
+  <T extends ApiData = ApiData, R extends ResponseType = 'json'>(
     config: CustomAxiosRequestConfig<R>
-  ): Promise<FlatResponseData<MappedType<R, T>, ResponseData>>;
+  ): Promise<FlatResponseData<ResponseData, MappedType<R, T>>>;
 }

@@ -5,6 +5,7 @@ import { useAuthStore } from '@/store/modules/auth';
 import { localStg } from '@/utils/storage';
 import { getServiceBaseURL } from '@/utils/service';
 import { $t } from '@/locales';
+import { getAuthorization } from './shared';
 import type { RequestInstanceState } from './type';
 import { RESPONSE_UNRECOGNIZED } from '~/packages/axios/src/constant';
 import { truncateString } from '~/packages/utils';
@@ -18,10 +19,7 @@ function handleLogoutEx() {
 }
 
 // request 重新声明临时解决错误 Vue: request implicitly has type any because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
-export const request: FlatRequestInstance<RequestInstanceState, App.Service.Response> = createFlatRequest<
-  App.Service.Response,
-  RequestInstanceState
->(
+export const request: FlatRequestInstance<RequestInstanceState, App.Service.Response> = createFlatRequest(
   {
     baseURL,
     headers: {
@@ -29,6 +27,13 @@ export const request: FlatRequestInstance<RequestInstanceState, App.Service.Resp
     }
   },
   {
+    defaultState: {
+      errMsgStack: [],
+      refreshTokenPromise: null
+    } as RequestInstanceState,
+    transform(response: AxiosResponse<App.Service.Response<any>>) {
+      return response.data.data;
+    },
     async onRequest(config) {
       const { headers } = config;
 
@@ -46,7 +51,7 @@ export const request: FlatRequestInstance<RequestInstanceState, App.Service.Resp
       return true;
     },
 
-    async onBackendFail(response) {
+    async onBackendFail(response, instance) {
       // 该钩子不会在请求成功时被调用了（非 4xx 5xx）
       const authStore = useAuthStore();
 
@@ -184,11 +189,14 @@ export const request: FlatRequestInstance<RequestInstanceState, App.Service.Resp
 );
 
 /** @deprecated */
-export const demoRequest = createRequest<App.Service.DemoResponse>(
+export const demoRequest = createRequest(
   {
     baseURL: otherBaseURL.demo
   },
   {
+    transform(response: AxiosResponse<App.Service.DemoResponse>) {
+      return response.data.result;
+    },
     async onRequest(config) {
       const { headers } = config;
 
@@ -207,9 +215,6 @@ export const demoRequest = createRequest<App.Service.DemoResponse>(
     async onBackendFail(_response) {
       // when the backend response code is not "200", it means the request is fail
       // for example: the token is expired, refresh token and retry request
-    },
-    transformBackendResponse(response) {
-      return response.data.result;
     },
     onError: error => {
       // when the request is fail, you can show error message

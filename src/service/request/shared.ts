@@ -6,8 +6,13 @@ import { useAuthStore } from '@/store/modules/auth';
 import { localStg } from '@/utils/storage';
 import { fetchRefreshToken } from '../api';
 import type { RequestInstanceState } from './type';
-import { ApiResponseError } from '~/packages/axios/src/shared';
-import { sanitizeHTML } from '~/packages/utils';
+
+export function getAuthorization() {
+  const token = localStg.get('token');
+  const Authorization = token ? `Bearer ${token}` : null;
+
+  return Authorization;
+}
 
 /**
  * refresh token 当前对接用不上
@@ -33,7 +38,7 @@ export async function handleRefreshToken(axiosConfig: AxiosRequestConfig) {
 
   resetStore();
 
-  return null;
+  return false;
 }
 
 export function showErrorMsg(state: RequestInstanceState, message: string) {

@@ -4,16 +4,28 @@ import { stringify } from 'qs';
 import { axiosRetryIsNetworkOrIdempotentRequestError, isHttpSuccess } from './shared';
 import type { RequestOption } from './type';
 
-export function createDefaultOptions<ResponseData = any>(options?: Partial<RequestOption<ResponseData>>) {
-  const opts: RequestOption<ResponseData> = {
+export function createDefaultOptions<
+  ResponseData,
+  ApiData = ResponseData,
+  State extends Record<string, unknown> = Record<string, unknown>
+>(options?: Partial<RequestOption<ResponseData, ApiData, State>>) {
+  const opts: RequestOption<ResponseData, ApiData, State> = {
     enableAutoRetry: true,
+    defaultState: {} as State,
+    transform: async response => response.data as unknown as ApiData,
+    transformBackendResponse: async response => response.data as unknown as ApiData,
     onRequest: async config => config,
+    onResponseValidation: () => true,
     isBackendSuccess: _response => true,
     onBackendFail: async () => {},
-    onResponseValidation: () => true,
-    transformBackendResponse: async response => response.data,
     onError: async () => Promise.resolve(null)
   };
+
+  if (options?.transform) {
+    opts.transform = options.transform;
+  } else {
+    opts.transform = options?.transformBackendResponse || opts.transform;
+  }
 
   Object.assign(opts, options);
 
