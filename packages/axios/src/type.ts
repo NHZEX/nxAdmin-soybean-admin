@@ -73,7 +73,9 @@ export interface RequestOption<
    *
    * @param error
    */
-  onError: (error: AxiosError<ResponseData>) => Promise<void> | Promise<AxiosError | ApiResponseError | Error | null>;
+  onError: (
+    error: AxiosError<ResponseData>
+  ) => undefined | null | Promise<void> | Promise<AxiosError | ApiResponseError | Error | null>;
 }
 
 interface ResponseMap {

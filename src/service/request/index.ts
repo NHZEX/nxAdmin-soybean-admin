@@ -1,5 +1,6 @@
+import type { AxiosResponse } from 'axios';
 import { isPlainObject } from 'lodash-es';
-import { BACKEND_ERROR_CODE, type FlatRequestInstance, createFlatRequest, createRequest } from '@sa/axios';
+import { BACKEND_ERROR_CODE, createFlatRequest, createRequest } from '@sa/axios';
 import { createResponseError } from '@/service/request/shared';
 import { useAuthStore } from '@/store/modules/auth';
 import { localStg } from '@/utils/storage';
@@ -18,8 +19,7 @@ function handleLogoutEx() {
   authStore.resetStore();
 }
 
-// request 重新声明临时解决错误 Vue: request implicitly has type any because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
-export const request: FlatRequestInstance<RequestInstanceState, App.Service.Response> = createFlatRequest(
+export const request = createFlatRequest(
   {
     baseURL,
     headers: {
@@ -32,16 +32,24 @@ export const request: FlatRequestInstance<RequestInstanceState, App.Service.Resp
       refreshTokenPromise: null
     } as RequestInstanceState,
     transform(response: AxiosResponse<App.Service.Response<any>>) {
-      return response.data.data;
+      const extractLevel = response.config.extractLevel ?? 1;
+      switch (extractLevel) {
+        case 1:
+          return response.data;
+        case 2:
+          if (response.status === 204 || !isPlainObject(response.data)) {
+            return response;
+          }
+          return response.data?.data;
+
+        default:
+          return response;
+      }
     },
     async onRequest(config) {
-      const { headers } = config;
-
-      // set token
-      const token = localStg.get('token');
-      if (token) {
-        const Authorization = token ? `Bearer TK="${token}"` : null;
-        Object.assign(headers, { Authorization });
+      const Authorization = getAuthorization();
+      if (Authorization) {
+        Object.assign(config.headers, { Authorization });
       }
 
       return config;
@@ -50,7 +58,7 @@ export const request: FlatRequestInstance<RequestInstanceState, App.Service.Resp
       // 已经弃用，该 hook 无实际用途
       return true;
     },
-
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async onBackendFail(response, instance) {
       // 该钩子不会在请求成功时被调用了（非 4xx 5xx）
       const authStore = useAuthStore();
@@ -114,19 +122,7 @@ export const request: FlatRequestInstance<RequestInstanceState, App.Service.Resp
       return null;
     },
     transformBackendResponse(response) {
-      const extractLevel = response.config.extractLevel ?? 1;
-      switch (extractLevel) {
-        case 1:
-          return response.data;
-        case 2:
-          if (response.status === 204 || !isPlainObject(response.data)) {
-            return response;
-          }
-          return response.data?.data;
-
-        default:
-          return response;
-      }
+      return response.data;
     },
     async onError(error) {
       if (error.code === RESPONSE_UNRECOGNIZED) {
@@ -135,6 +131,7 @@ export const request: FlatRequestInstance<RequestInstanceState, App.Service.Resp
       const response = error.response;
       const respData = response?.data;
       const httpCode = response?.status;
+      const requestState: RequestInstanceState = request.state;
       try {
         if (isPlainObject(respData)) {
           const errno = respData?.code || -1;
@@ -145,7 +142,7 @@ export const request: FlatRequestInstance<RequestInstanceState, App.Service.Resp
               code: errno,
               innerError: error
             },
-            request.state
+            requestState
           );
         } else if (respData instanceof Blob) {
           const result = await respData.text();
@@ -166,7 +163,7 @@ export const request: FlatRequestInstance<RequestInstanceState, App.Service.Resp
               code: errno,
               innerError: error
             },
-            request.state
+            requestState
           );
         }
         return createResponseError(
@@ -175,7 +172,7 @@ export const request: FlatRequestInstance<RequestInstanceState, App.Service.Resp
             code: -1,
             innerError: error
           },
-          request.state
+          requestState
         );
       } finally {
         if (httpCode === 401) {
@@ -183,7 +180,6 @@ export const request: FlatRequestInstance<RequestInstanceState, App.Service.Resp
           handleLogoutEx();
         }
       }
-      // showErrorMsg(request.state, message);
     }
   }
 );

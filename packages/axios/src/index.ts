@@ -30,7 +30,7 @@ function createCommonRequest<
   // config axios retry
   if (opts.enableAutoRetry) {
     const retryOptions = createRetryOptions(axiosConf);
-    axiosRetry(instance as any, retryOptions);
+    axiosRetry(instance, retryOptions);
   }
 
   function configAbortSignal(requestId: string, config: InternalAxiosRequestConfig) {
@@ -144,6 +144,7 @@ function createCommonRequest<
   return {
     instance,
     opts,
+    cancelRequest,
     cancelAllRequest
   };
 }

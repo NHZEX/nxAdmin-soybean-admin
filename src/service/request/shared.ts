@@ -2,14 +2,16 @@ import { h } from 'vue';
 import { NAlert } from 'naive-ui';
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { AxiosError } from 'axios';
+import { sanitizeHTML } from '@sa/utils';
 import { useAuthStore } from '@/store/modules/auth';
 import { localStg } from '@/utils/storage';
 import { fetchRefreshToken } from '../api';
 import type { RequestInstanceState } from './type';
+import { ApiResponseError } from '~/packages/axios/src/shared';
 
 export function getAuthorization() {
   const token = localStg.get('token');
-  const Authorization = token ? `Bearer ${token}` : null;
+  const Authorization = token ? `Bearer TK="${token}"` : null;
 
   return Authorization;
 }
@@ -71,7 +73,7 @@ export function createResponseError<T = any, D = any>(
     response?: AxiosResponse<T, D>;
     config?: AxiosRequestConfig<D>;
   },
-  instance?: RequestInstanceState
+  instance: RequestInstanceState
 ): ApiResponseError {
   if (state.response === undefined && state.innerError instanceof AxiosError) {
     state.response = state.innerError.response;
