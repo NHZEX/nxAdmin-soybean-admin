@@ -25,7 +25,10 @@ const {
   showTotal: true,
   apiParams: {
     current: 1,
-    size: 10
+    size: 10,
+    username: null,
+    genre: null,
+    status: null
   },
   columns: () => [
     {
@@ -83,7 +86,7 @@ const {
             {row.role_id > 0 && <NTag type="warning">{row.role_name}</NTag>}
             {(() => {
               if (row.roles?.length) {
-                return row.roles?.map(v => <NTag type="info">{v.name}</NTag>);
+                return row.roles?.map((v: Api.SystemManage.Role) => <NTag type="info">{v.name}</NTag>);
               }
               return null;
             })()}
@@ -145,7 +148,7 @@ const {
   onBatchDeleted,
   onDeleted
   // closeDrawer
-} = useTableOperate<Api.SystemManage.User>(data, getData);
+} = useTableOperate(data, 'id', getData);
 
 async function handleBatchDelete() {
   // request
@@ -170,7 +173,7 @@ function edit(id: number) {
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
     <UserSearch v-model:model="searchParams" @reset="resetSearchParams" @search="getDataByPage" />
-    <NCard :title="$t('page.manage.user.title')" :bordered="false" size="small" class="sm:flex-1-hidden card-wrapper">
+    <NCard :title="$t('page.manage.user.title')" :bordered="false" size="small" class="card-wrapper sm:flex-1-hidden">
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"

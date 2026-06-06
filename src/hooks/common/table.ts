@@ -8,6 +8,8 @@ import { jsonClone } from '@sa/utils';
 import { useAppStore } from '@/store/modules/app';
 import { $t } from '@/locales';
 
+export { useTable, useTableOperate as useTableOperateV1, wrapApiFn } from './table-v1';
+
 export type UseNaiveTableOptions<ResponseData, ApiData, Pagination extends boolean> = Omit<
   UseTableOptions<ResponseData, ApiData, NaiveUI.TableColumn<ApiData>, Pagination>,
   'pagination' | 'getColumnChecks' | 'getColumns'
@@ -308,28 +310,4 @@ function getColumns<Column extends NaiveUI.TableColumn<any>>(cols: Column[], che
 
 export function isTableColumnHasKey<T>(column: NaiveUI.TableColumn<T>): column is NaiveUI.TableColumnWithKey<T> {
   return Boolean((column as NaiveUI.TableColumnWithKey<T>).key);
-}
-
-export function wrapApiFn(fn: (params: any) => Promise<any>) {
-  return async (params: any) => {
-    const args = structuredClone(params);
-    const { current: queryCurrent, size: querySize } = params;
-    delete args.current;
-    delete args.size;
-    const { data, error } = await fn({
-      page: queryCurrent,
-      limit: querySize,
-      ...args
-    });
-    let newData = data;
-    if (!error) {
-      const {
-        data: records = [],
-        total = 0,
-        page: { current: respCurrent = 1, size: respSize = 10 }
-      } = data as any as Api.Common.LegacyPaginatingQueryRecord;
-      newData = { records, current: respCurrent, size: respSize, total };
-    }
-    return { data: newData, error } as { data: Api.Common.PaginatingQueryRecord; error: any };
-  };
 }

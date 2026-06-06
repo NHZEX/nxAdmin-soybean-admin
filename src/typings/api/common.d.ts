@@ -11,9 +11,9 @@ declare namespace Api {
     /** common params of paginating */
     interface PaginatingCommonParams {
       /** current page number */
-      current?: number; // 暂时兼容避免类型检测错误
+      current: number;
       /** page size */
-      size?: number; // 暂时兼容避免类型检测错误
+      size: number;
       /** total count */
       total: number;
       // 新增参数声明
@@ -25,7 +25,7 @@ declare namespace Api {
 
     /** common params of paginating query list data 完成全部实现后再考虑如何融合该类 */
     interface PaginatingQueryRecord<T = any> extends PaginatingCommonParams {
-      records?: T[]; // 暂时兼容避免类型检测错误
+      records: T[];
       data?: T[];
     }
     interface LegacyPaginatingQueryRecord<T = any>

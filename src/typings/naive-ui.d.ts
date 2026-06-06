@@ -22,4 +22,35 @@ declare namespace NaiveUI {
    * - edit: edit table item
    */
   type TableOperateType = 'add' | 'edit';
+
+  /**
+   * 兼容V1代码
+   */
+  type TableDataWithIndex<T> = import('@sa/hooks').TableDataWithIndex<T>;
+  type FlatResponseData<T> = import('@sa/axios').FlatResponseData<any, T>;
+
+  type TableApiFn<T = any, R = Api.Common.CommonSearchParams> = (
+    params: R,
+    signal?: AbortSignal
+  ) => Promise<FlatResponseData<Api.Common.PaginatingQueryRecord<T>>>;
+
+  // type GetTableData<A extends TableApiFn> = A extends TableApiFn<infer T> ? T : never;
+
+  type GetApiData<A extends (...args: any[]) => any> =
+    Awaited<ReturnType<A>> extends FlatResponseData<infer D> ? D : never;
+
+  type GetTableData<A extends (...args: any[]) => any> =
+    GetApiData<A> extends Api.Common.PaginatingQueryRecord<infer T> ? T : never;
+
+  type NaiveTableConfig<A extends TableApiFn> = Pick<
+    import('@sa/hooks').TableConfig<A, GetTableData<A>, TableColumn<TableDataWithIndex<GetTableData<A>>>>,
+    'apiFn' | 'apiParams' | 'columns' | 'immediate'
+  > & {
+    /**
+     * whether to display the total items count
+     *
+     * @default false
+     */
+    showTotal?: boolean;
+  };
 }

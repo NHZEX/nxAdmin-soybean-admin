@@ -4,6 +4,8 @@ import useCountDown from './use-count-down';
 import useContext from './use-context';
 import useSvgIconRender from './use-svg-icon-render';
 import useTable from './use-table';
+import useHookTableV1 from './use-table-v1';
 
-export { useBoolean, useLoading, useCountDown, useContext, useSvgIconRender, useTable };
+export { useBoolean, useLoading, useCountDown, useContext, useSvgIconRender, useTable, useHookTableV1 };
 export type * from './use-table';
+export type * from './use-table-v1';

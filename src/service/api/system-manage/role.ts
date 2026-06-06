@@ -4,7 +4,8 @@ export function fetchRoleList(params?: Api.SystemManage.RoleSearchParams) {
   return request<Api.SystemManage.RoleList>({
     url: '/v2/admin/roles',
     method: 'get',
-    params
+    params,
+    extractLevel: 1
   });
 }
 
