@@ -86,7 +86,11 @@ const {
             {row.role_id > 0 && <NTag type="warning">{row.role_name}</NTag>}
             {(() => {
               if (row.roles?.length) {
-                return row.roles?.map((v: Api.SystemManage.Role) => <NTag type="info">{v.name}</NTag>);
+                return row.roles.map(role => (
+                  <NTag key={role.id} type="info">
+                    {role.name}
+                  </NTag>
+                ));
               }
               return null;
             })()}

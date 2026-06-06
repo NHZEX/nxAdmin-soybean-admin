@@ -28,8 +28,10 @@ declare namespace Api {
       records: T[];
       data?: T[];
     }
-    interface LegacyPaginatingQueryRecord<T = any>
-      extends Omit<PaginatingCommonParams, 'current' | 'size' | 'page' | 'limit'> {
+    interface LegacyPaginatingQueryRecord<T = any> extends Omit<
+      PaginatingCommonParams,
+      'current' | 'size' | 'page' | 'limit'
+    > {
       data: T[];
       total: number;
       page: {

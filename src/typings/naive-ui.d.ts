@@ -1,6 +1,7 @@
 declare namespace NaiveUI {
   type ThemeColor = 'default' | 'error' | 'primary' | 'info' | 'success' | 'warning';
   type Align = 'stretch' | 'baseline' | 'start' | 'end' | 'center' | 'flex-end' | 'flex-start';
+  type ComponentsBasicsType = NonNullable<import('naive-ui').TagProps['type']>;
 
   type DataTableBaseColumn<T> = import('naive-ui').DataTableBaseColumn<T>;
   type DataTableExpandColumn<T> = import('naive-ui').DataTableExpandColumn<T>;

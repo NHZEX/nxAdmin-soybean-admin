@@ -7,14 +7,23 @@ declare namespace Api {
   namespace Auth {
     interface LoginToken {
       token: string;
-      refreshToken: string;
+      uuid?: string;
+      refreshToken?: string;
     }
 
+    interface LoginPermission {
+      [key: string]: boolean;
+    }
+
+    type AuthItem = string[] | string | boolean | null | undefined;
+
     interface UserInfo {
-      userId: string;
-      userName: string;
-      roles: string[];
-      buttons: string[];
+      userId?: string;
+      userName?: string;
+      roles?: string[];
+      buttons?: string[];
+      user: Api.SystemManage.User;
+      permission: LoginPermission;
     }
   }
 }

@@ -53,12 +53,14 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
   /** Record the user ID of the previous login session Used to compare with the current user ID on next login */
   function recordUserId() {
-    if (!userInfo.userId) {
+    const userId = userInfo.value?.id;
+
+    if (!userId) {
       return;
     }
 
     // Store current user ID locally for next login comparison
-    localStg.set('lastLoginUserId', userInfo.userId);
+    localStg.set('lastLoginUserId', String(userId));
   }
 
   /**
@@ -67,14 +69,16 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
    * @returns {boolean} Whether to clear all tabs
    */
   function checkTabClear(): boolean {
-    if (!userInfo.userId) {
+    const userId = userInfo.value?.id;
+
+    if (!userId) {
       return false;
     }
 
     const lastLoginUserId = localStg.get('lastLoginUserId');
 
     // Clear all tabs if current user is different from previous user
-    if (!lastLoginUserId || lastLoginUserId !== userInfo.userId) {
+    if (!lastLoginUserId || lastLoginUserId !== String(userId)) {
       localStg.remove('globalTabs');
       tabStore.clearTabs();
 
@@ -128,7 +132,9 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   async function loginByToken(loginToken: Api.Auth.LoginToken) {
     // 1. stored in the localStorage, the later requests need it in headers
     localStg.set('token', loginToken.token);
-    localStg.set('uuid', loginToken.uuid);
+    if (loginToken.uuid) {
+      localStg.set('uuid', loginToken.uuid);
+    }
     localStg.set('refreshToken', 'null');
 
     // 2. get user info
@@ -149,7 +155,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     if (!error) {
       // update store
       userInfo.value = info.user;
-      permissions.value = new Set(Object.keys(info.permission));
+      permissions.value = new Set(Object.keys(info.permission ?? {}));
 
       return true;
     }
