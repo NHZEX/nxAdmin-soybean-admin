@@ -135,7 +135,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     if (loginToken.uuid) {
       localStg.set('uuid', loginToken.uuid);
     }
-    localStg.set('refreshToken', 'null');
+    localStg.remove('refreshToken');
 
     // 2. get user info
     const pass = await getUserInfo();

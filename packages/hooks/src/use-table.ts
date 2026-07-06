@@ -22,7 +22,7 @@ export type TableColumnCheck = {
   key: string;
   title: TableColumnCheckTitle;
   checked: boolean;
-  visible: boolean;
+  visible?: boolean;
 };
 
 export interface UseTableOptions<ResponseData, ApiData, Column, Pagination extends boolean> {

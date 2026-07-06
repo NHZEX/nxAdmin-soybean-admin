@@ -5,7 +5,6 @@ import { createResponseError } from '@/service/request/shared';
 import { useAuthStore } from '@/store/modules/auth';
 import { localStg } from '@/utils/storage';
 import { getServiceBaseURL } from '@/utils/service';
-import { $t } from '@/locales';
 import { getAuthorization } from './shared';
 import type { RequestInstanceState } from './type';
 import { RESPONSE_UNRECOGNIZED } from '~/packages/axios/src/constant';
@@ -58,67 +57,10 @@ export const request = createFlatRequest(
       // 已经弃用，该 hook 无实际用途
       return true;
     },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async onBackendFail(response, instance) {
-      // 该钩子不会在请求成功时被调用了（非 4xx 5xx）
-      const authStore = useAuthStore();
-
-      function handleLogout() {
-        authStore.resetStore();
-      }
-
-      function logoutAndCleanup() {
-        handleLogout();
-        window.removeEventListener('beforeunload', handleLogout);
-
-        request.state.errMsgStack = request.state.errMsgStack.filter(msg => msg !== response.data.msg);
-      }
-
+    async onBackendFail(response) {
       if (response.status === 401) {
-        handleLogout();
-        return null;
+        handleLogoutEx();
       }
-
-      // 确认重新登录当前是死代码，但具有一定的参考价值
-      if (response.status === 401 && !request.state.errMsgStack?.includes(response.data.msg)) {
-        request.state.errMsgStack = [...(request.state.errMsgStack || []), response.data.msg];
-
-        // prevent the user from refreshing the page
-        window.addEventListener('beforeunload', handleLogout);
-
-        window.$dialog?.error({
-          title: $t('common.error'),
-          content: response.data.msg,
-          positiveText: $t('common.confirm'),
-          maskClosable: false,
-          closeOnEsc: false,
-          onPositiveClick() {
-            logoutAndCleanup();
-          },
-          onClose() {
-            logoutAndCleanup();
-          }
-        });
-
-        return null;
-      }
-
-      // RefreshingToken 当前不使用，但具有一定的参考价值
-      // // when the backend response code is in `expiredTokenCodes`, it means the token is expired, and refresh token
-      // // the api `refreshToken` can not return error code in `expiredTokenCodes`, otherwise it will be a dead loop, should return `logoutCodes` or `modalLogoutCodes`
-      // const expiredTokenCodes = import.meta.env.VITE_SERVICE_EXPIRED_TOKEN_CODES?.split(',') || [];
-      // if (expiredTokenCodes.includes(response.data.code) && !request.state.isRefreshingToken) {
-      //   request.state.isRefreshingToken = true;
-      //
-      //   const refreshConfig = await handleRefreshToken(response.config);
-      //
-      //   request.state.isRefreshingToken = false;
-      //
-      //   if (refreshConfig) {
-      //     return instance.request(refreshConfig) as Promise<AxiosResponse>;
-      //   }
-      // }
-
       return null;
     },
     transformBackendResponse(response) {
