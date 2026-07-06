@@ -17,12 +17,14 @@ const themeStore = useThemeStore();
 <template>
   <div class="flex-col-stretch gap-16px">
     <LayoutMode />
-    <TabSettings />
-    <HeaderSettings />
-    <!-- The top menu mode does not have a sidebar -->
-    <SiderSettings v-if="themeStore.layout.mode !== 'horizontal'" />
-    <FooterSettings />
-    <ContentSettings />
+    <template v-if="!themeStore.simplifyMode">
+      <TabSettings />
+      <HeaderSettings />
+      <!-- The top menu mode does not have a sidebar -->
+      <SiderSettings v-if="themeStore.layout.mode !== 'horizontal'" />
+      <FooterSettings />
+      <ContentSettings />
+    </template>
   </div>
 </template>
 

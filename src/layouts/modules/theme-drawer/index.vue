@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useAppStore } from '@/store/modules/app';
+import { useThemeStore } from '@/store/modules/theme';
 import { $t } from '@/locales';
 import AppearanceSettings from './modules/appearance/index.vue';
 import LayoutSettings from './modules/layout/index.vue';
@@ -13,7 +14,17 @@ defineOptions({
 });
 
 const appStore = useAppStore();
+const themeStore = useThemeStore();
 const activeTab = ref('appearance');
+const availableTabs = computed(() => {
+  const tabs = ['appearance', 'layout'];
+
+  if (!themeStore.simplifyMode) {
+    tabs.push('general', 'preset');
+  }
+
+  return tabs;
+});
 
 const drawerWidth = computed(() => {
   const width = 400;
@@ -25,6 +36,16 @@ const drawerWidth = computed(() => {
 
   return width;
 });
+
+watch(
+  availableTabs,
+  tabs => {
+    if (!tabs.includes(activeTab.value)) {
+      activeTab.value = 'appearance';
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -33,16 +54,16 @@ const drawerWidth = computed(() => {
       <NTabs v-model:value="activeTab" type="segment" size="medium" class="mb-16px">
         <NTab name="appearance" :tab="$t('theme.tabs.appearance')"></NTab>
         <NTab name="layout" :tab="$t('theme.tabs.layout')"></NTab>
-        <NTab name="general" :tab="$t('theme.tabs.general')"></NTab>
-        <NTab name="preset" :tab="$t('theme.tabs.preset')"></NTab>
+        <NTab v-if="!themeStore.simplifyMode" name="general" :tab="$t('theme.tabs.general')"></NTab>
+        <NTab v-if="!themeStore.simplifyMode" name="preset" :tab="$t('theme.tabs.preset')"></NTab>
       </NTabs>
 
       <div class="min-h-400px">
         <KeepAlive>
           <AppearanceSettings v-if="activeTab === 'appearance'" />
           <LayoutSettings v-else-if="activeTab === 'layout'" />
-          <GeneralSettings v-else-if="activeTab === 'general'" />
-          <PresetSettings v-else-if="activeTab === 'preset'" />
+          <GeneralSettings v-else-if="!themeStore.simplifyMode && activeTab === 'general'" />
+          <PresetSettings v-else-if="!themeStore.simplifyMode && activeTab === 'preset'" />
         </KeepAlive>
       </div>
 
