@@ -1,6 +1,5 @@
 import { execSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
-import path from 'node:path';
 import process from 'node:process';
 
 let gitDirCache: string | null = null;
@@ -64,8 +63,7 @@ function checkSpecialStates() {
 }
 
 function checkCommitMessage(allowSkipWip: boolean = true) {
-  const gitPath = execSync('git rev-parse --show-toplevel').toString().trim();
-  const commitMsgFile = path.join(gitPath, '.git', 'COMMIT_EDITMSG');
+  const commitMsgFile = execSync('git rev-parse --git-path COMMIT_EDITMSG').toString().trim();
 
   const commitMsg = readFileSync(commitMsgFile, 'utf-8').trim();
 
