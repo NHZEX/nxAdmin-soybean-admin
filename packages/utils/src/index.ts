@@ -3,3 +3,4 @@ export * from './storage';
 export * from './nanoid';
 export * from './klona';
 export * from './common';
+export * from './normalize';
