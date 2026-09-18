@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import './plugins/assets';
+import { setupAppInstance } from '@/plugins/app-instance';
 import {
   setupAppVersionNotification,
   setupDayjs,
@@ -23,6 +24,8 @@ async function setupApp() {
   setupDayjs();
 
   const app = createApp(App);
+
+  setupAppInstance(app);
 
   setupStore(app);
 
