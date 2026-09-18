@@ -17,6 +17,10 @@ declare namespace Env {
     readonly VITE_APP_TITLE: string;
     /** The description of the application */
     readonly VITE_APP_DESC: string;
+    /** Pre-filled username on the login page */
+    readonly VITE_LOGIN_PRESET_USERNAME?: string;
+    /** Pre-filled password on the login page */
+    readonly VITE_LOGIN_PRESET_PASSWORD?: string;
     /** The router history mode */
     readonly VITE_ROUTER_HISTORY_MODE?: RouterHistoryMode;
     /** The prefix of the iconify icon */

@@ -19,9 +19,11 @@ interface FormModel {
   password: string;
 }
 
+const { VITE_LOGIN_PRESET_USERNAME = '', VITE_LOGIN_PRESET_PASSWORD = '' } = import.meta.env;
+
 const model: FormModel = reactive({
-  userName: 'admin123',
-  password: 'admin123'
+  userName: VITE_LOGIN_PRESET_USERNAME,
+  password: VITE_LOGIN_PRESET_PASSWORD
 });
 
 const rules = computed<Record<keyof FormModel, App.Global.FormRule[]>>(() => {
