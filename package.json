@@ -44,6 +44,7 @@
     "prepare": "simple-git-hooks",
     "preview": "vite preview",
     "release": "sa release",
+    "test": "vitest run",
     "typecheck": "vue-tsc --noEmit --skipLibCheck",
     "update-pkg": "sa update-pkg"
   },
@@ -89,9 +90,11 @@
     "@unocss/vite": "66.5.10",
     "@vitejs/plugin-vue": "6.0.3",
     "@vitejs/plugin-vue-jsx": "5.1.2",
+    "@vue/test-utils": "2.4.10",
     "consola": "3.4.2",
     "eslint": "9.39.2",
     "eslint-plugin-vue": "10.6.2",
+    "jsdom": "29.1.1",
     "kolorist": "1.8.0",
     "sass": "1.97.1",
     "simple-git-hooks": "2.13.1",
@@ -105,6 +108,7 @@
     "vite-plugin-svg-icons": "2.0.1",
     "vite-plugin-vue-devtools": "8.0.5",
     "vite-plugin-zip-pack": "^1.2.4",
+    "vitest": "4.1.8",
     "vue-eslint-parser": "10.2.0",
     "vue-tsc": "3.2.1"
   },

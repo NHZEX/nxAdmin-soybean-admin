@@ -16,7 +16,7 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
 
   const isMobile = computed(() => appStore.isMobile);
 
-  const { apiFn, apiParams, immediate, showTotal } = config;
+  const { apiFn, apiParams, immediate, showTotal, abortPrevious, debounce } = config;
 
   const SELECTION_KEY = '__selection__';
 
@@ -117,7 +117,9 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
         itemCount: total
       });
     },
-    immediate
+    immediate,
+    abortPrevious,
+    debounce
   });
 
   /**

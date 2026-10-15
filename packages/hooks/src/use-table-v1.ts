@@ -124,24 +124,20 @@ export default function useHookTable<A extends ApiFn, T, C>(config: TableConfig<
     }
 
     const signal = abortController?.signal;
-    const response = await apiFn(formattedParams, signal);
+    try {
+      const response = await apiFn(formattedParams, signal);
+      // 即使 API 忽略取消信号，旧响应也不能覆盖新查询的数据和分页。
+      if (signal?.aborted) return;
 
-    const transformed = transformer(response as Awaited<ReturnType<A>>);
-
-    data.value = transformed.data;
-
-    setEmpty(transformed.data.length === 0);
-
-    await config.onFetched?.(transformed);
-
-    if (signal) {
-      // 如果遇到信号被中止那代表肯定存在新请求正在发起中，不要结束 loading 状态
-      if (!signal.aborted) {
+      const transformed = transformer(response as Awaited<ReturnType<A>>);
+      data.value = transformed.data;
+      setEmpty(transformed.data.length === 0);
+      await config.onFetched?.(transformed);
+    } finally {
+      // 旧请求结束时，新请求仍可能在加载；失败的当前请求也必须释放 loading。
+      if (!signal?.aborted) {
         endLoading();
       }
-    } else {
-      // 信号不存在代表没有启用 abortPrevious 正常结束
-      endLoading();
     }
   }
 

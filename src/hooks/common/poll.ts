@@ -2,6 +2,10 @@ import { computed, getCurrentInstance, onActivated, onDeactivated, onScopeDispos
 import type { MaybeRefOrGetter, Ref } from 'vue';
 
 type Awaitable<T> = T | PromiseLike<T>;
+interface PollExecution {
+  restartCountdown: boolean;
+  completedTriggers: (() => void)[];
+}
 
 type AutoPauseReason = 'hidden' | 'deactivated';
 
@@ -13,9 +17,20 @@ export interface UsePollFnOptions {
   mode?: PollMode;
   immediate?: boolean;
   immediateCallback?: boolean;
+  /** Reactive scheduling gate; resume() cannot override it or automatic lifecycle pauses. */
+  enabled?: MaybeRefOrGetter<boolean>;
+  /** Restart the countdown after an actual execute()/trigger() run, including failures. Defaults to false. */
+  resetIntervalOnExecute?: boolean;
   pauseWhenHidden?: boolean;
   pauseWhenDeactivated?: boolean;
   onError?: (error: unknown) => void;
+}
+
+export interface PollTriggerOptions {
+  /** Trailing debounce in milliseconds. Automatic pauses restart the debounce on resume. */
+  debounce?: number;
+  /** Keep one pending refresh while busy (default), or skip this trigger. */
+  whenRunning?: 'trailing' | 'skip';
 }
 
 export interface UsePollFnReturn {
@@ -23,7 +38,12 @@ export interface UsePollFnReturn {
   isRunning: Ref<boolean>;
   pause: () => void;
   resume: () => void;
+  /** Legacy explicit execution bypasses scheduling gates; serial/skip calls made while busy are skipped. */
   execute: () => Promise<void>;
+  /** Obeys scheduling gates; resolves after the requested refresh or cancellation of a queued trigger. */
+  trigger: (options?: PollTriggerOptions) => Promise<void>;
+  /** Restart the active countdown without executing or changing pause state. */
+  resetInterval: () => void;
 }
 
 export function usePollFn(
@@ -35,6 +55,8 @@ export function usePollFn(
     mode = 'serial',
     immediate = true,
     immediateCallback = false,
+    enabled = true,
+    resetIntervalOnExecute = false,
     pauseWhenHidden = true,
     pauseWhenDeactivated = true,
     onError
@@ -53,6 +75,13 @@ export function usePollFn(
   let intervalTimer: ReturnType<typeof setInterval> | null = null;
   let serialTimer: ReturnType<typeof setTimeout> | null = null;
   let serialRunToken = 0;
+  let triggerTimer: ReturnType<typeof setTimeout> | null = null;
+  let pendingTrigger: {
+    promise: Promise<void>;
+    resolve: () => void;
+    debounce: number;
+    ready: boolean;
+  } | null = null;
 
   function resolveIntervalMs() {
     const raw = Number(toValue(interval));
@@ -72,11 +101,62 @@ export function usePollFn(
   }
 
   function canSchedule() {
-    return !disposed && manualEnabled.value && autoPauseReasons.size === 0;
+    return !disposed && manualEnabled.value && Boolean(toValue(enabled)) && autoPauseReasons.size === 0;
+  }
+
+  function clearTriggerTimer() {
+    if (triggerTimer !== null) clearTimeout(triggerTimer);
+    triggerTimer = null;
+  }
+
+  function cancelTrigger() {
+    clearTriggerTimer();
+    const pending = pendingTrigger;
+    pendingTrigger = null;
+    pending?.resolve();
+  }
+
+  function flushTrigger() {
+    if (!pendingTrigger?.ready || !canSchedule() || locked || isRunning.value) return;
+    execute().catch(handleError);
+  }
+
+  function armTrigger() {
+    clearTriggerTimer();
+    if (!pendingTrigger || !canSchedule()) return;
+    if (pendingTrigger.debounce === 0) {
+      pendingTrigger.ready = true;
+      flushTrigger();
+      return;
+    }
+    triggerTimer = setTimeout(() => {
+      triggerTimer = null;
+      if (pendingTrigger) pendingTrigger.ready = true;
+      flushTrigger();
+    }, pendingTrigger.debounce);
+  }
+
+  function trigger(triggerOptions: PollTriggerOptions = {}): Promise<void> {
+    if (disposed || (triggerOptions.whenRunning === 'skip' && isRunning.value)) return Promise.resolve();
+    if (!pendingTrigger) {
+      let resolve!: () => void;
+      const promise = new Promise<void>(done => {
+        resolve = done;
+      });
+      pendingTrigger = { promise, resolve, debounce: 0, ready: false };
+    }
+    const pending = pendingTrigger;
+    const delay = Number(triggerOptions.debounce ?? 0);
+    pending.debounce = Number.isFinite(delay) ? Math.max(0, delay) : 0;
+    pending.ready = false;
+    armTrigger();
+    return pending.promise;
   }
 
   function stopScheduler() {
     clearTimers();
+    clearTriggerTimer();
+    if (pendingTrigger) pendingTrigger.ready = false;
     isActive.value = false;
     serialRunToken += 1;
     coalesced = false;
@@ -90,9 +170,22 @@ export function usePollFn(
     }
   }
 
-  async function runCallback() {
+  async function runCallback(execution: PollExecution) {
     if (disposed) return;
 
+    // Any new read can satisfy pending triggers, including a periodic read that starts before the debounce expires.
+    // Triggers received during that read form a separate trailing batch with their own completion promise.
+    const pending = canSchedule() ? pendingTrigger : null;
+    if (pending) {
+      pendingTrigger = null;
+      clearTriggerTimer();
+      // A scheduled read satisfying a trigger also adopts its countdown-reset policy.
+      if (resetIntervalOnExecute && !execution.restartCountdown) {
+        execution.restartCountdown = true;
+        clearTimers();
+        serialRunToken += 1;
+      }
+    }
     runningCount.value += 1;
     try {
       await cb();
@@ -100,20 +193,21 @@ export function usePollFn(
       handleError(error);
     } finally {
       runningCount.value -= 1;
+      if (pending) execution.completedTriggers.push(pending.resolve);
     }
   }
 
-  async function runExclusive() {
+  async function runExclusive(execution: PollExecution) {
     if (locked) return;
     locked = true;
     try {
-      await runCallback();
+      await runCallback(execution);
     } finally {
       locked = false;
     }
   }
 
-  async function runCoalesced() {
+  async function runCoalesced(execution: PollExecution) {
     if (locked) {
       coalesced = true;
       return;
@@ -123,8 +217,10 @@ export function usePollFn(
     try {
       const runTrailing = async (): Promise<void> => {
         coalesced = false;
-        await runCallback();
+        await runCallback(execution);
         if (!canSchedule() || !coalesced) return;
+        // A continuously busy ticker must not keep completed trigger batches waiting for unrelated rounds.
+        execution.completedTriggers.splice(0).forEach(resolve => resolve());
         await runTrailing();
       };
 
@@ -134,41 +230,60 @@ export function usePollFn(
     }
   }
 
-  async function execute() {
+  async function performExecution(resetCountdown: boolean) {
     if (disposed) return;
-
-    switch (mode) {
-      case 'overlap':
-        await runCallback();
-        break;
-      case 'coalesce':
-        await runCoalesced();
-        break;
-      case 'serial':
-      case 'skip':
-      default:
-        await runExclusive();
-        break;
+    const execution: PollExecution = {
+      restartCountdown: resetCountdown && (mode === 'overlap' || !locked),
+      completedTriggers: []
+    };
+    if (execution.restartCountdown) {
+      clearTimers();
+      serialRunToken += 1;
+    }
+    try {
+      switch (mode) {
+        case 'overlap':
+          await runCallback(execution);
+          break;
+        case 'coalesce':
+          await runCoalesced(execution);
+          break;
+        case 'serial':
+        case 'skip':
+        default:
+          await runExclusive(execution);
+          break;
+      }
+    } finally {
+      if (execution.restartCountdown) resetInterval();
+      // Exclusive/coalesced locks are released before a trailing trigger can start.
+      flushTrigger();
+      // In exclusive modes, awaiting a trigger must also wait for lock release and countdown reset.
+      execution.completedTriggers.forEach(resolve => resolve());
     }
   }
 
-  function startTickerScheduler() {
+  function execute() {
+    return performExecution(resetIntervalOnExecute);
+  }
+
+  function startTickerScheduler(runImmediately = immediateCallback) {
     isActive.value = true;
     intervalTimer = setInterval(() => {
-      execute().catch(handleError);
+      performExecution(false).catch(handleError);
     }, resolveIntervalMs());
 
-    if (immediateCallback) {
-      execute().catch(handleError);
+    if (runImmediately) {
+      performExecution(false).catch(handleError);
     }
   }
 
-  function startSerialScheduler() {
+  function startSerialScheduler(runImmediately = immediateCallback) {
     const token = ++serialRunToken;
 
     async function runLoop() {
       if (!canSchedule() || token !== serialRunToken) return;
-      await runExclusive();
+      await performExecution(false);
       if (!canSchedule() || token !== serialRunToken) return;
       scheduleNext(resolveIntervalMs());
     }
@@ -183,7 +298,7 @@ export function usePollFn(
 
     isActive.value = true;
 
-    if (immediateCallback) {
+    if (runImmediately) {
       runLoop().catch(handleError);
       return;
     }
@@ -196,10 +311,18 @@ export function usePollFn(
 
     if (mode === 'serial') {
       startSerialScheduler();
-      return;
+    } else {
+      startTickerScheduler();
     }
+    armTrigger();
+  }
 
-    startTickerScheduler();
+  function resetInterval() {
+    if (!isActive.value || !canSchedule()) return;
+    clearTimers();
+    // Keep isActive stable: postponing a timer must not look like a lifecycle pause to consumers.
+    if (mode === 'serial') startSerialScheduler(false);
+    else startTickerScheduler(false);
   }
 
   function syncScheduler() {
@@ -212,6 +335,7 @@ export function usePollFn(
 
   function pause() {
     manualEnabled.value = false;
+    cancelTrigger();
     stopScheduler();
   }
 
@@ -263,6 +387,8 @@ export function usePollFn(
     });
   }
 
+  watch(() => Boolean(toValue(enabled)), syncScheduler, { flush: 'sync' });
+
   watch(
     () => toValue(interval),
     () => {
@@ -279,6 +405,7 @@ export function usePollFn(
   onScopeDispose(() => {
     disposed = true;
     manualEnabled.value = false;
+    cancelTrigger();
     stopScheduler();
   });
 
@@ -287,6 +414,8 @@ export function usePollFn(
     isRunning,
     pause,
     resume,
-    execute
+    execute,
+    trigger,
+    resetInterval
   };
 }

@@ -7,7 +7,10 @@ import { useAuthStore } from '@/store/modules/auth';
 import { localStg } from '@/utils/storage';
 import { fetchRefreshToken } from '../api';
 import type { RequestInstanceState } from './type';
+import { shouldSilenceError } from './error-message';
 import { ApiResponseError } from '~/packages/axios/src/shared';
+
+export { getResponseErrorMessage, normalizeResponseErrorData } from './error-message';
 
 export function getAuthorization() {
   const token = localStg.get('token');
@@ -73,7 +76,7 @@ export function createResponseError<T = any, D = any>(
     response?: AxiosResponse<T, D>;
     config?: AxiosRequestConfig<D>;
   },
-  instance: RequestInstanceState
+  instance?: RequestInstanceState
 ): ApiResponseError {
   if (state.response === undefined && state.innerError instanceof AxiosError) {
     state.response = state.innerError.response;
@@ -85,12 +88,12 @@ export function createResponseError<T = any, D = any>(
   const error = new ApiResponseError(message, {
     code: state.code,
     innerError: state.innerError,
-    response: state.response
+    response: state.response,
+    config: state.config
   });
 
-  if (instance !== undefined && state.innerError instanceof AxiosError && !error.isCancel()) {
-    const silentErrorNotify = state.innerError?.config?.silentErrorNotify ?? false;
-    if (!silentErrorNotify) {
+  if (instance !== undefined && !error.isCancel()) {
+    if (!shouldSilenceError(error, state.config?.silentErrorNotify)) {
       notifyResponseError(error, instance);
     }
   }

@@ -5,10 +5,9 @@ import { createResponseError } from '@/service/request/shared';
 import { useAuthStore } from '@/store/modules/auth';
 import { localStg } from '@/utils/storage';
 import { getServiceBaseURL } from '@/utils/service';
-import { getAuthorization } from './shared';
+import { getAuthorization, normalizeResponseErrorData } from './shared';
 import type { RequestInstanceState } from './type';
 import { RESPONSE_UNRECOGNIZED } from '~/packages/axios/src/constant';
-import { truncateString } from '~/packages/utils';
 
 const isHttpProxy = import.meta.env.DEV && import.meta.env.VITE_HTTP_PROXY === 'Y';
 const { baseURL, otherBaseURL } = getServiceBaseURL(import.meta.env, isHttpProxy);
@@ -75,43 +74,11 @@ export const request = createFlatRequest(
       const httpCode = response?.status;
       const requestState: RequestInstanceState = request.state;
       try {
-        if (isPlainObject(respData)) {
-          const errno = respData?.code || -1;
-          const message = respData?.msg || respData?.message || 'unknown';
-          return createResponseError(
-            message,
-            {
-              code: errno,
-              innerError: error
-            },
-            requestState
-          );
-        } else if (respData instanceof Blob) {
-          const result = await respData.text();
-          let message = 'unknown';
-          let errno = -1;
-          try {
-            const data = JSON.parse(result);
-            if (isPlainObject(data)) {
-              errno = data.errno;
-              message = data.message;
-            }
-          } catch {
-            message = truncateString(result, 128, '[omit...]');
-          }
-          return createResponseError(
-            message,
-            {
-              code: errno,
-              innerError: error
-            },
-            requestState
-          );
-        }
+        const { code, message } = await normalizeResponseErrorData(respData);
         return createResponseError(
-          `unknown error: ${error.code}, ${error.message}`,
+          message || `unknown error: ${error.code}, ${error.message}`,
           {
-            code: -1,
+            code,
             innerError: error
           },
           requestState
